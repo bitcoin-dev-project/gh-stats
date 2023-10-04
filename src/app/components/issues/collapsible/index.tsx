@@ -32,8 +32,7 @@ const IssueCollapsibleComponent = ({
                 }}
             >
                 <span
-                    className="text-violet11 text-[15px] leading-[25px] pr-4"
-                    style={{ color: "white" }}
+                    className="text-violet11 text-[15px] leading-[25px] pr-4 text-black dark:text-white"
                 >
                     {type === "long"
                         ? `${issues.length} long comments on issues/PR`
