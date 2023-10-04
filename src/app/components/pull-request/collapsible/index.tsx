@@ -54,6 +54,7 @@ const PullRequestCollapsibleComponent = ({
                             >
                                 <Link
                                     href={pullRequest.url}
+                                    target="_blank"
                                     className=" text-blue-600 underline flex flex-wrap text-left justify-start items-start w-full"
                                 >
                                     {pullRequest.url}
@@ -80,6 +81,7 @@ const PullRequestCollapsibleComponent = ({
                                 </p>
                                 <Link
                                     href={pullRequest.repoUrl}
+                                    target="_blank"
                                     className=" text-violet-500 text-[13px] hover:underline flex flex-wrap text-left justify-start items-start w-full"
                                 >
                                     repo: {pullRequest.repoUrl}
