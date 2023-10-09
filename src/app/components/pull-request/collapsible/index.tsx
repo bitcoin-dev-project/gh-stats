@@ -24,17 +24,12 @@ const PullRequestCollapsibleComponent = ({
             open={open}
             onOpenChange={setOpen}
         >
-            <div
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between"
-                }}
-            >
-                <span
-                    className="text-violet11 text-[15px] leading-[25px] pr-4 text-black dark:text-white"
-                >
-                    {`${pullRequests.length} ${type} pull requests`}
+            <div className="flex items-center justify-between">
+                <span className="text-violet11 text-[15px] leading-[25px] pr-4 text-black dark:text-white">
+                    {`${pullRequests.length} `}
+                    {type === "closed by others"
+                        ? "pull requests closed by others"
+                        : `${type} pull requests`}
                 </span>
                 <Collapsible.Trigger asChild>
                     <button className="rounded-full h-[25px] w-[25px] inline-flex items-center justify-center text-violet-500 shadow-[0_2px_10px] shadow-blackA4 outline-none data-[state=closed]:bg-white data-[state=open]:bg-violet-200 hover:bg-violet-200 focus:shadow-[0_0_0_2px] focus:shadow-black">
@@ -76,6 +71,14 @@ const PullRequestCollapsibleComponent = ({
                                     <code className="text-violet-500 text-[13px] leading-[25px]">
                                         Opened for: {pullRequest.daysOpened}{" "}
                                         days
+                                    </code>
+                                </p>
+                                <p>
+                                    <code className="text-violet-500 text-[13px] leading-[25px]">
+                                        Opened on:{" "}
+                                        {new Date(
+                                            pullRequest.createdAt
+                                        ).toDateString()}
                                     </code>
                                 </p>
                                 <Link
