@@ -8,7 +8,8 @@
         "start": "next start",
         "lint": "next lint",
         "prettier:check": "prettier --check .",
-        "prettier:fix": "prettier --write ."
+        "prettier:fix": "prettier --write .",
+        "check-code": "yarn prettier:check && yarn lint"
     },
     "dependencies": {
         "@radix-ui/react-collapsible": "^1.0.3",

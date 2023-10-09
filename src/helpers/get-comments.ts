@@ -1,4 +1,4 @@
-import { Comment } from "../types/comments"
+import { Comment } from "@/types/comments"
 
 export const getOwnComments = ({
     data,
@@ -10,7 +10,8 @@ export const getOwnComments = ({
     const rawComments = data?.issueComments?.nodes.filter(
         (comment: any) => comment.issue.author.login === username
     )
-    return rawComments.map((comment: any) => {
+
+    const comments: Comment[] = rawComments.map((comment: any) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -20,6 +21,13 @@ export const getOwnComments = ({
             project: comment.repository.owner
         }
     })
+
+    comments.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+
+    return comments
 }
 
 export const getOthersComments = ({
@@ -32,7 +40,8 @@ export const getOthersComments = ({
     const rawComments = data?.issueComments?.nodes.filter(
         (comment: any) => comment.issue.author.login !== username
     )
-    return rawComments.map((comment: any) => {
+
+    const comments: Comment[] = rawComments.map((comment: any) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -42,13 +51,21 @@ export const getOthersComments = ({
             project: comment.repository.owner
         }
     })
+
+    comments.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+
+    return comments
 }
 
 export const getLongComments = ({ data }: { data: any }): Comment[] => {
     const rawComments = data?.issueComments?.nodes.filter(
         (comment: any) => comment.body.length > 500
     )
-    return rawComments.map((comment: any) => {
+
+    const comments: Comment[] = rawComments.map((comment: any) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -58,4 +75,11 @@ export const getLongComments = ({ data }: { data: any }): Comment[] => {
             project: comment.repository.owner
         }
     })
+
+    comments.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+
+    return comments
 }

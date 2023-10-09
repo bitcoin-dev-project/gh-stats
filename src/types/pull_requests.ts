@@ -8,6 +8,7 @@ export type PR = {
     title: string
     avatarUrl: string
     project: { login: string; avatarUrl: string }
+    createdAt: string | number | Date
 }
 
 export type PullRequests = {

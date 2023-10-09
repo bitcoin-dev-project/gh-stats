@@ -20,6 +20,7 @@ export const getPullRequests = ({
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
+        createdAt: pr.node.createdAt,
         avatarUrl: pr.node.author.avatarUrl,
         project: pr.node.repository.owner
     }))
@@ -39,7 +40,8 @@ export const getPullRequests = ({
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        project: pr.node.repository.owner,
+        createdAt: pr.node.createdAt
     }))
 
     const closedPRsData = data.pullRequests.edges.filter(
@@ -56,7 +58,8 @@ export const getPullRequests = ({
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        project: pr.node.repository.owner,
+        createdAt: pr.node.createdAt
     }))
 
     const closedPRsByOthersData = data.pullRequests.edges.filter(
@@ -76,7 +79,8 @@ export const getPullRequests = ({
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        project: pr.node.repository.owner,
+        createdAt: pr.node.createdAt
     }))
 
     const mergedPRData = data.pullRequests.edges.filter(
@@ -93,8 +97,30 @@ export const getPullRequests = ({
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        project: pr.node.repository.owner,
+        createdAt: pr.node.createdAt
     }))
+
+    openPRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    openInactivePRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    closedPRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    closedPRsByOthers.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    mergedPRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
 
     return {
         openPRs,
