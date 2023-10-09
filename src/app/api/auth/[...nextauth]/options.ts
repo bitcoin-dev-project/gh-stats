@@ -14,7 +14,6 @@ export const authOptions: NextAuthOptions = {
             if (account) {
                 token.accessToken = account.access_token
             }
-            // console.log("jwt", token)
             return token
         },
         async session({
@@ -29,7 +28,6 @@ export const authOptions: NextAuthOptions = {
             if (token.accessToken) {
                 session.accessToken = token.accessToken as string
             }
-            // console.log("session", session)
             return session
         }
     }
