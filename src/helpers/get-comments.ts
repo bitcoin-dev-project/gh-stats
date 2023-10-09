@@ -21,7 +21,8 @@ export const getOwnComments = ({
     })
 
     comments.sort(
-        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 
     return comments
@@ -48,7 +49,8 @@ export const getOthersComments = ({
     })
 
     comments.sort(
-        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 
     return comments
@@ -69,7 +71,8 @@ export const getLongComments = ({ data }: { data: any }): Comment[] => {
     })
 
     comments.sort(
-        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
 
     return comments

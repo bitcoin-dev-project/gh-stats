@@ -92,7 +92,8 @@ export const getPullRequests = ({
     }))
 
     openPRs.sort(
-        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
     openInactivePRs.sort(
         (a, b) =>
