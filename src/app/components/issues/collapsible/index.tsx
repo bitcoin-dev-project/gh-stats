@@ -31,9 +31,7 @@ const IssueCollapsibleComponent = ({
                     justifyContent: "space-between"
                 }}
             >
-                <span
-                    className="text-violet11 text-[15px] leading-[25px] pr-4 text-black dark:text-white"
-                >
+                <span className="text-violet11 text-[15px] leading-[25px] pr-4 text-black dark:text-white">
                     {type === "long"
                         ? `${issues.length} long comments on issues/PR`
                         : `${issues.length} comments on ${type} issues/PR`}

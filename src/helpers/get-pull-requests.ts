@@ -19,7 +19,8 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        createdAt: pr.node.createdAt
     }))
 
     const openInactivePRsData = openPRsData.filter(
@@ -35,7 +36,8 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        createdAt: pr.node.createdAt
     }))
 
     const closedPRsData = data.pullRequests.edges.filter(
@@ -50,7 +52,8 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        createdAt: pr.node.createdAt
     }))
 
     const closedPRsByOthersData = data.pullRequests.edges.filter(
@@ -68,7 +71,8 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        createdAt: pr.node.createdAt
     }))
 
     const mergedPRData = data.pullRequests.edges.filter(
@@ -83,8 +87,29 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        createdAt: pr.node.createdAt
     }))
+
+    openPRs.sort(
+        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+    )
+    openInactivePRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    closedPRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    closedPRsByOthers.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    mergedPRs.sort(
+        (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
 
     return {
         openPRs,

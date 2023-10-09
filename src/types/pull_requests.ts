@@ -4,6 +4,7 @@ export type PR = {
     url: string
     repoUrl: string
     title: string
+    createdAt: string | number | Date
 }
 
 export type PullRequests = {

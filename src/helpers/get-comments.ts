@@ -1,4 +1,4 @@
-import { Comment } from "../types/comments"
+import { Comment } from "@/types/comments"
 
 export const getOwnComments = ({
     data,
@@ -10,7 +10,8 @@ export const getOwnComments = ({
     const rawComments = data?.issueComments?.nodes.filter(
         (comment: any) => comment.issue.author.login === username
     )
-    return rawComments.map((comment: any) => {
+
+    const comments: Comment[] = rawComments.map((comment: any) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -18,6 +19,12 @@ export const getOwnComments = ({
             createdAt: comment.createdAt
         }
     })
+
+    comments.sort(
+        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+    )
+
+    return comments
 }
 
 export const getOthersComments = ({
@@ -30,7 +37,8 @@ export const getOthersComments = ({
     const rawComments = data?.issueComments?.nodes.filter(
         (comment: any) => comment.issue.author.login !== username
     )
-    return rawComments.map((comment: any) => {
+
+    const comments: Comment[] = rawComments.map((comment: any) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -38,13 +46,20 @@ export const getOthersComments = ({
             createdAt: comment.createdAt
         }
     })
+
+    comments.sort(
+        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+    )
+
+    return comments
 }
 
 export const getLongComments = ({ data }: { data: any }): Comment[] => {
     const rawComments = data?.issueComments?.nodes.filter(
         (comment: any) => comment.body.length > 500
     )
-    return rawComments.map((comment: any) => {
+
+    const comments: Comment[] = rawComments.map((comment: any) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -52,4 +67,10 @@ export const getLongComments = ({ data }: { data: any }): Comment[] => {
             createdAt: comment.createdAt
         }
     })
+
+    comments.sort(
+        (a, b) => Number(new Date(b.createdAt)) - Number(new Date(a.createdAt))
+    )
+
+    return comments
 }
