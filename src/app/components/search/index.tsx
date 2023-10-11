@@ -199,7 +199,7 @@ export default function Search() {
                     </div>
                 )}
             </div>
-            <div className="flex flex-col justify-center items-center mt-4">
+            {/* <div className="flex flex-col justify-center items-center mt-4">
                 {closedPrsByOthers.length > 0 && (
                     <div className="flex flex-col justify-center items-center mt-4">
                         <PullRequestCollapsibleComponent
@@ -208,7 +208,7 @@ export default function Search() {
                         />
                     </div>
                 )}
-            </div>
+            </div> */}
         </>
     )
 }
