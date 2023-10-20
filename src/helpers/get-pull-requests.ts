@@ -19,7 +19,9 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        avatarUrl: pr.node.author.avatarUrl,
+        project: pr.node.repository.owner
     }))
 
     const openInactivePRsData = openPRsData.filter(
@@ -35,7 +37,9 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        avatarUrl: pr.node.author.avatarUrl,
+        project: pr.node.repository.owner
     }))
 
     const closedPRsData = data.pullRequests.edges.filter(
@@ -50,7 +54,9 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        avatarUrl: pr.node.author.avatarUrl,
+        project: pr.node.repository.owner
     }))
 
     const closedPRsByOthersData = data.pullRequests.edges.filter(
@@ -68,7 +74,9 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        avatarUrl: pr.node.author.avatarUrl,
+        project: pr.node.repository.owner
     }))
 
     const mergedPRData = data.pullRequests.edges.filter(
@@ -83,7 +91,9 @@ export const getPullRequests = ({
         ),
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
-        title: pr.node.title
+        title: pr.node.title,
+        avatarUrl: pr.node.author.avatarUrl,
+        project: pr.node.repository.owner
     }))
 
     return {
