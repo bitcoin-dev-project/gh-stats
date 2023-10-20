@@ -6,11 +6,19 @@ query ($username: String!){
           issue {
             author{
               login
+              avatarUrl
+            }
+            comments(orderBy: {field: UPDATED_AT, direction: ASC } ){
+              totalCount
             }
           }
           body
           repository {
             url
+            owner{
+              login
+              avatarUrl
+            }
           }
           url
           createdAt
@@ -32,6 +40,13 @@ query ($username: String!){
             title
             repository{
               url
+              owner{
+                login
+                avatarUrl
+              }
+            }
+            author{
+              avatarUrl
             }
             totalCommentsCount
             merged
