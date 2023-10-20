@@ -39,9 +39,9 @@ export const getPullRequests = ({
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
+        createdAt: pr.node.createdAt,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner,
-        createdAt: pr.node.createdAt
+        project: pr.node.repository.owner
     }))
 
     const closedPRsData = data.pullRequests.edges.filter(
@@ -57,9 +57,9 @@ export const getPullRequests = ({
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
+        createdAt: pr.node.createdAt,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner,
-        createdAt: pr.node.createdAt
+        project: pr.node.repository.owner
     }))
 
     const closedPRsByOthersData = data.pullRequests.edges.filter(
@@ -78,9 +78,9 @@ export const getPullRequests = ({
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
+        createdAt: pr.node.createdAt,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner,
-        createdAt: pr.node.createdAt
+        project: pr.node.repository.owner
     }))
 
     const mergedPRData = data.pullRequests.edges.filter(
@@ -96,9 +96,9 @@ export const getPullRequests = ({
         url: pr.node.url,
         repoUrl: pr.node.repository.url,
         title: pr.node.title,
+        createdAt: pr.node.createdAt,
         avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner,
-        createdAt: pr.node.createdAt
+        project: pr.node.repository.owner
     }))
 
     openPRs.sort(
