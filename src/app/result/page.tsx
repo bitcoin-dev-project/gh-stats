@@ -20,11 +20,11 @@ const Page = () => {
         loading,
         error,
         projects,
-        toggleFilter
+        toggleFilter,
+        yearlyFilter,
+        handleYearlyFilter,
+        years
     } = useGithubIssues()
-
-    const [currentYear, setCurrentYear] = useState("2023")
-    const dummyYears = ["2023", "2022", "2021", "2020"]
 
     return (
         <main className="flex items-center justify-center">
@@ -36,7 +36,7 @@ const Page = () => {
                     <section className="max-h-[201px] flex flex-col gap-4 pt-9">
                         <div className="flex justify-between items-center">
                             <h2 className=" text-black capitalize">
-                                {username} {currentYear} contributions
+                                {username} {""} contributions
                             </h2>
                             <section className="">
                                 <button className="text-xs leading-[18px] px-2 py-[5px] font-semibold text-card-text-black border-2 border-border-blue rounded-l-[6px]">
@@ -115,10 +115,9 @@ const Page = () => {
                 </div>
                 <div className="w-full p-6 py-8 h-max rounded-[15px]">
                     <YearSection
-                        years={dummyYears}
-                        data={undefined}
-                        currentYear={"2023"}
-                        setCurrentYear={setCurrentYear}
+                        years={years}
+                        currentYear={yearlyFilter}
+                        handleClick={handleYearlyFilter}
                     />
                 </div>
             </div>

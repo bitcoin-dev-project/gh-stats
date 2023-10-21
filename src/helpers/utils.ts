@@ -1,5 +1,5 @@
 import { Comment } from "@/types/comments"
-import { Project } from "@/types/pull_requests"
+import { IssuesObject, Project, PRsObject } from "@/types/pull_requests"
 
 export const getIssueNumber = (arg: string) => {
     const splitUrl = arg.split("#")
@@ -63,4 +63,22 @@ export const getOrganisations = (
     )
 
     return { orgs }
+}
+
+export const extractYears = (prsData: PRsObject, issueData: IssuesObject) => {
+    const totalDataSet = { ...prsData, ...issueData }
+
+    const years = Array.from(
+        new Set(
+            Object.values(totalDataSet)
+                .map((set) => {
+                    return set.map((item) =>
+                        item.createdAt.toString().slice(0, 4)
+                    )
+                })
+                .flat()
+        )
+    )
+
+    return { years }
 }

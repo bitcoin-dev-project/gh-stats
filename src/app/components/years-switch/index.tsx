@@ -2,17 +2,11 @@ import React from "react"
 
 type YearSectionProps = {
     years: string[]
-    data: any
-    currentYear: string
-    setCurrentYear: React.Dispatch<React.SetStateAction<string>>
+    currentYear: string | null
+    handleClick: (year: string) => void
 }
 
-const YearSection = ({
-    years,
-    data,
-    currentYear,
-    setCurrentYear
-}: YearSectionProps) => {
+const YearSection = ({ years, currentYear, handleClick }: YearSectionProps) => {
     return (
         <div className="flex flex-col gap-1">
             {years.map((year) => (
@@ -22,7 +16,7 @@ const YearSection = ({
                             ? "bg-secondary-blue text-white"
                             : "bg-transparent text-card-light-black"
                     }`}
-                    onClick={() => setCurrentYear(year)}
+                    onClick={() => handleClick(year)}
                     key={year}
                 >
                     <p className="text-sm">{year}</p>
