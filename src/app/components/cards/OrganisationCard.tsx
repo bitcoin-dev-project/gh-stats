@@ -24,7 +24,7 @@ export const OrganisationCard = ({
                     : "w-max rounded-md items-center justify-center"
             }  ${
                 toggleFilter === login
-                    ? "border-black border-2"
+                    ? " border-card-text-black border-2"
                     : toggleFilter === login && more === true
                     ? "border-black border"
                     : "border-none"
