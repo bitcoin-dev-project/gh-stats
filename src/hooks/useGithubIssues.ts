@@ -8,13 +8,13 @@ import {
 import { getPullRequests } from "@/helpers/get-pull-requests"
 import { IssuesObject, Project, PRsObject } from "@/types/pull_requests"
 import { useSearchParams } from "next/navigation"
-import { extractYears, getOrganisations } from "@/helpers/utils"
+import { extractYears, filterObject, getOrganisations } from "@/helpers/utils"
 
 export const useGithubIssues = () => {
     const searchParams = useSearchParams()
     const username = searchParams.get("username")
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear().toString();
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear().toString()
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -115,57 +115,15 @@ export const useGithubIssues = () => {
         fetchGithubIssues()
     }, [username])
 
-    const memoizedIssues = useMemo(() => {
-        const filteredObject: any = {}
+    const memoizedIssues = useMemo(
+        () => filterObject(toggleFilter, yearlyFilter, issuesObject),
+        [issuesObject, toggleFilter, yearlyFilter]
+    )
 
-        if (toggleFilter) {
-            for (const [key, value] of Object.entries(issuesObject)) {
-                filteredObject[key] = value.filter(
-                    (x) =>
-                        x.project?.login?.toLowerCase() ===
-                        toggleFilter?.toLowerCase()
-                )
-            }
-            return filteredObject
-        } else if (yearlyFilter) {
-            for (const [key, value] of Object.entries(issuesObject)) {
-                filteredObject[key] = value.filter(
-                    (x) => x.createdAt.toString().slice(0, 4) === yearlyFilter
-                )
-            }
-
-            return filteredObject
-        } else {
-            return issuesObject
-        }
-    }, [issuesObject, toggleFilter, yearlyFilter])
-
-    const memoizedPrs = useMemo(() => {
-        const filteredObject: any = {}
-
-        if (toggleFilter) {
-            for (const [key, value] of Object.entries(prsObject)) {
-                filteredObject[key] = value.filter(
-                    (x) =>
-                        x.project?.login?.toLowerCase() ===
-                        toggleFilter?.toLowerCase()
-                )
-            }
-            return filteredObject
-        } else if (yearlyFilter) {
-            for (const [key, value] of Object.entries(prsObject)) {
-                filteredObject[key] = value.filter(
-                    (x) =>
-                        x.createdAt.toString().slice(0, 4).toLowerCase() ===
-                        yearlyFilter?.toLowerCase()
-                )
-            }
-
-            return filteredObject
-        } else {
-            return prsObject
-        }
-    }, [prsObject, toggleFilter, yearlyFilter])
+    const memoizedPrs = useMemo(
+        () => filterObject(toggleFilter, yearlyFilter, prsObject),
+        [prsObject, toggleFilter, yearlyFilter]
+    )
 
     const { years } = extractYears(prsObject, issuesObject)
 

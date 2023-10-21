@@ -82,3 +82,46 @@ export const extractYears = (prsData: PRsObject, issueData: IssuesObject) => {
 
     return { years }
 }
+
+export function filterObject<Type extends { [s: string]: Array<any> }>(
+    toggleFilter: string | null,
+    yearlyFilter: string | null,
+    data: Type
+): Type {
+    const filteredObject: any = {}
+
+    if (toggleFilter) {
+        for (const [key, value] of Object.entries(data)) {
+            filteredObject[key] = value.filter(
+                (x) =>
+                    x.project?.login?.toLowerCase() ===
+                    toggleFilter?.toLowerCase()
+            )
+
+            if (yearlyFilter) {
+                for (const [key, value] of Object.entries(
+                    filteredObject as Type
+                )) {
+                    filteredObject[key] = value.filter(
+                        (x) =>
+                            x.createdAt.toString().slice(0, 4) ===
+                                yearlyFilter &&
+                            x.project?.login?.toLowerCase() ===
+                                toggleFilter?.toLowerCase()
+                    )
+                }
+            }
+        }
+        return filteredObject
+    } else if (yearlyFilter) {
+        for (const [key, value] of Object.entries(data)) {
+            filteredObject[key] = value.filter(
+                (x) => x.createdAt.toString().slice(0, 4) === yearlyFilter
+            )
+        }
+
+        return filteredObject
+    } else {
+        return data
+    }
+}
