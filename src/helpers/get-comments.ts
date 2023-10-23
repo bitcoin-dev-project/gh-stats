@@ -16,7 +16,9 @@ export const getOwnComments = ({
             body: comment.body,
             repository: comment.repository.url,
             url: comment.url,
-            createdAt: comment.createdAt
+            createdAt: comment.createdAt,
+            issue: comment.issue,
+            project: comment.repository.owner
         }
     })
 
@@ -44,7 +46,9 @@ export const getOthersComments = ({
             body: comment.body,
             repository: comment.repository.url,
             url: comment.url,
-            createdAt: comment.createdAt
+            createdAt: comment.createdAt,
+            issue: comment.issue,
+            project: comment.repository.owner
         }
     })
 
@@ -66,7 +70,9 @@ export const getLongComments = ({ data }: { data: any }): Comment[] => {
             body: comment.body,
             repository: comment.repository.url,
             url: comment.url,
-            createdAt: comment.createdAt
+            createdAt: comment.createdAt,
+            issue: comment.issue,
+            project: comment.repository.owner
         }
     })
 
