@@ -27,14 +27,14 @@ const Page = () => {
     } = useGithubIssues()
 
     return (
-        <main className="flex items-center justify-center bg-white">
+        <main className="flex items-center justify-center">
             <div
-                className="sm:h-screen h-full max-w-5xl flex flex-col-reverse w-full sm:grid sm:justify-center"
+                className="h-screen max-w-5xl grid justify-center w-full"
                 style={{ gridTemplateColumns: "3fr 1fr" }}
             >
-                <div className="w-full flex flex-col sm:border-2 md:p-9 md:pt-0 sm:pb-2 p-4 pt-0 gap-6 h-screen">
+                <div className="w-full flex flex-col border-2 p-9 pt-0 pb-2 gap-6 h-screen">
                     <section className="max-h-[201px] flex flex-col gap-4 pt-9">
-                        <div className="flex gap-2 flex-col sm:justify-between sm:items-center  sm:flex-row">
+                        <div className="flex justify-between items-center">
                             <h2 className=" text-black capitalize">
                                 {username} {""} contributions
                             </h2>
@@ -49,7 +49,7 @@ const Page = () => {
                         </div>
                         <div className="outline h-[82px] outline-black"></div>
                     </section>
-                    <section className="flex gap-4 w-full flex-wrap">
+                    <section className="flex gap-4 w-full">
                         {projects.length > 0 &&
                             projects
                                 .slice(0, 3)
@@ -113,7 +113,7 @@ const Page = () => {
                         )}
                     </section>
                 </div>
-                <div className="w-full sm:p-4 md:p-9 lg:px-8 sm:px-4 md:px-4 sm:py-8 h-max rounded-[15px] p-0 flex items-end justify-end absolute top-9 right-4 sm:relative sm:block sm:top-0 sm:right-0">
+                <div className="w-full p-6 py-8 h-max rounded-[15px]">
                     <YearSection
                         years={years}
                         currentYear={yearlyFilter}
