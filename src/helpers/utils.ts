@@ -1,5 +1,6 @@
-import { Comment } from "@/types/comments"
-import { IssuesObject, Project, PRsObject } from "@/types/pull_requests"
+import { Contributions, GridSet } from "@/types"
+import { Comment, IssuesObject } from "@/types/comments"
+import { Project, PRsObject } from "@/types/pull_requests"
 
 export const getIssueNumber = (arg: string) => {
     const splitUrl = arg.split("#")
@@ -124,4 +125,141 @@ export function filterObject<Type extends { [s: string]: Array<any> }>(
     } else {
         return data
     }
+}
+
+const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+]
+
+export const getYearlyContributions = (year: string, data: PRsObject) => {
+    const monthsObject: Record<string, Array<any>> = {}
+    const contributions: Contributions = {}
+
+    const extractDates = Object.values(data)
+        .map((set) => {
+            return set
+                .filter(
+                    (item) => item.createdAt.toString().slice(0, 4) === year
+                )
+                .map((x) => new Date(x.createdAt).toDateString())
+        })
+        .flat()
+
+    for (let m = 0; m < months.length; m++) {
+        const monthElem = months[m]
+
+        for (let index = 0; index < extractDates.length; index++) {
+            const dateElem = extractDates[index]
+
+            if (dateElem.includes(monthElem)) {
+                const dates = monthsObject[monthElem] ?? []
+                monthsObject[monthElem] = [...dates, dateElem]
+            }
+        }
+    }
+
+    for (const [key, value] of Object.entries(monthsObject)) {
+        const sorted = value
+            .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+            .reduce((a, c) => {
+                const key = c
+
+                const currGroup = a[key] ?? []
+
+                return { ...a, [key]: [...currGroup, c] }
+            }, {})
+
+        contributions[key] = sorted
+    }
+
+    for (const [_, value] of Object.entries(contributions)) {
+        Object.keys(value).map((ky) => {
+            let newKey = ky?.split(" ")[2]
+            newKey = Number(newKey) <= 9 ? newKey.slice(1) : newKey
+            value[newKey] = [...value[ky]]
+
+            delete value[ky]
+        })
+    }
+
+    return { extractDates, year, contributions }
+}
+
+export const createGridSet = (year: string) => {
+    const isLeapYear = Number(year) % 2 === 0
+
+    const monthsNIndex = months.map((month) => {
+        if (!isLeapYear && month === "Feb") {
+            return { month, boxes: 28, is_active: false }
+        } else {
+            return { month, boxes: 35, is_active: false }
+        }
+    })
+
+    const gridSet = monthsNIndex.map((mth) => {
+        return {
+            ...mth,
+            boxes: Array.from({ length: mth.boxes }, (_, idx) => ({
+                day: idx + 1,
+                is_active: false
+            }))
+        }
+    })
+
+    return { gridSet }
+}
+
+export const generateGraphValues = (
+    contributions: Contributions,
+    gridSet: GridSet
+) => {
+    const graphValues = gridSet.map((sect) => {
+        if (!contributions?.[sect.month]) {
+            return Array.from(sect.boxes).map((day) => ({
+                ...day,
+                is_active: false,
+                desc: `No contributions on ${sect.month} ${day.day}`
+            }))
+        } else {
+            const addContributions = Array.from(sect.boxes).map((contrib) => {
+                const activity = contributions[sect.month][contrib.day] ?? []
+                const activity_count = activity.length
+                const desc =
+                    activity_count === 0
+                        ? `No contribution on ${sect.month} ${contrib.day}`
+                        : activity_count === 1
+                        ? `1 contribution on ${sect.month} ${contrib.day}`
+                        : `${activity_count} contributions on ${sect.month} ${contrib.day}`
+
+                if (!activity || activity_count === 0) {
+                    return {
+                        ...contrib,
+                        is_active: false,
+                        desc
+                    }
+                } else {
+                    return {
+                        ...contrib,
+                        is_active: true,
+                        desc
+                    }
+                }
+            })
+
+            return addContributions
+        }
+    })
+
+    return graphValues.flat()
 }
