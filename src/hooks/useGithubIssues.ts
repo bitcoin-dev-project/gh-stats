@@ -6,9 +6,17 @@ import {
     getOwnComments
 } from "@/helpers/get-comments"
 import { getPullRequests } from "@/helpers/get-pull-requests"
-import { IssuesObject, Project, PRsObject } from "@/types/pull_requests"
+import { Project, PRsObject } from "@/types/pull_requests"
 import { useSearchParams } from "next/navigation"
-import { extractYears, filterObject, getOrganisations } from "@/helpers/utils"
+import {
+    createGridSet,
+    extractYears,
+    filterObject,
+    generateGraphValues,
+    getOrganisations,
+    getYearlyContributions
+} from "@/helpers/utils"
+import { IssuesObject } from '@/types/comments'
 
 export const useGithubIssues = () => {
     const searchParams = useSearchParams()
@@ -127,6 +135,14 @@ export const useGithubIssues = () => {
 
     const { years } = extractYears(prsObject, issuesObject)
 
+    const { contributions } = getYearlyContributions(yearlyFilter!, prsObject)
+    const { gridSet } = createGridSet(yearlyFilter!)
+
+    const memoizedGraphValues = useMemo(
+        () => generateGraphValues(contributions, gridSet),
+        [contributions, gridSet]
+    )
+
     const handleFilterToggle = (key: string) => {
         setToggleFilter((prev) => (prev === key ? null : key))
     }
@@ -145,6 +161,7 @@ export const useGithubIssues = () => {
         toggleFilter,
         yearlyFilter,
         handleYearlyFilter,
-        years
+        years,
+        memoizedGraphValues
     }
 }
