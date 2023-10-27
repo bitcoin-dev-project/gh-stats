@@ -21,7 +21,11 @@ const config: Config = {
             backgroundColor: {
                 "card-bg": "#F6F8FA",
                 "secondary-blue": "#0969DA",
-                "secondary-orange": "#EF7A0E"
+                "secondary-orange": "#EF7A0E",
+                "grid-green": "#39D353",
+                "grid-blue": "#0783F5",
+                "grid-yellow": "#E7C23E",
+                "grid-gray": "#EEEEEE"
             },
             boxShadow: {
                 "card-shadow": "0px 1px 0px 0px rgba(27, 31, 35, 0.04)"
@@ -31,7 +35,7 @@ const config: Config = {
                     "light-black": "#636C76",
                     "text-black": "#24292F",
                     "comment-card-black": "#1F2328",
-                    "secondary-blue": "#0969DA",
+                    "secondary-blue": "#0969DA"
                 }
             }
         }
