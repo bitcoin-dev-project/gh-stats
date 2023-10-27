@@ -8,6 +8,8 @@ import YearSection from "../components/years-switch"
 import { useGithubIssues } from "@/hooks/useGithubIssues"
 import { IssuesAndPullRequests } from "../components/issues-and-prs"
 import Skeleton from "../components/skeleton"
+import "../globals.css"
+import ToolTip from "../components/tool-tip"
 
 const Page = () => {
     const searchParams = useSearchParams()
@@ -23,7 +25,8 @@ const Page = () => {
         toggleFilter,
         yearlyFilter,
         handleYearlyFilter,
-        years
+        years,
+        memoizedGraphValues
     } = useGithubIssues()
 
     return (
@@ -36,7 +39,7 @@ const Page = () => {
                     <section className="max-h-[201px] flex flex-col gap-4 pt-9">
                         <div className="flex gap-2 flex-col sm:justify-between sm:items-center  sm:flex-row">
                             <h2 className=" text-black capitalize">
-                                {username} {""} contributions
+                                {username} contributions
                             </h2>
                             <section className="">
                                 <button className="text-xs leading-[18px] px-2 py-[5px] font-semibold text-card-text-black border-2 border-border-blue rounded-l-[6px]">
@@ -47,7 +50,16 @@ const Page = () => {
                                 </button>
                             </section>
                         </div>
-                        <div className="outline h-[82px] outline-black"></div>
+                        <div className="outline h-[82px]">
+                            <div className="flex-wrap gap-[2px] grid grid-rows-6 grid-flow-col h-full gridBox">
+                                {memoizedGraphValues.map((day, idx) => (
+                                    <ToolTip
+                                        key={`${day.day}_${idx}`}
+                                        content={day}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </section>
                     <section className="flex gap-4 w-full flex-wrap">
                         {projects.length > 0 &&
