@@ -1,16 +1,19 @@
 import React from "react"
 import * as Tooltip from "@radix-ui/react-tooltip"
+import { Contribution } from "@/types"
 
 const ToolTip = ({
-    content
+    content,
+    onClickToolTip
 }: {
-    content: { is_active: boolean; desc: string; day: number }
+    content: Contribution
+    onClickToolTip: (content: Contribution) => void
 }) => {
     return (
         <Tooltip.Provider>
             <Tooltip.Root>
                 <Tooltip.Trigger asChild>
-                    <button className="IconButton">
+                    <button onClick={() => onClickToolTip(content)}>
                         <p
                             className={`rounded-sm p-1 h-[10px] w-[10px] cursor-pointer ${
                                 content.is_active

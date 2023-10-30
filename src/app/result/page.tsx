@@ -26,7 +26,8 @@ const Page = () => {
         yearlyFilter,
         handleYearlyFilter,
         years,
-        memoizedGraphValues
+        memoizedGraphValues,
+        onClickToolTip
     } = useGithubIssues()
 
     return (
@@ -51,11 +52,12 @@ const Page = () => {
                             </section>
                         </div>
                         <div className="outline h-[82px]">
-                            <div className="flex-wrap gap-[2px] grid grid-rows-6 grid-flow-col h-full gridBox">
+                            <div className="gap-[2px] grid grid-flow-col h-full gridBox">
                                 {memoizedGraphValues.map((day, idx) => (
                                     <ToolTip
                                         key={`${day.day}_${idx}`}
                                         content={day}
+                                        onClickToolTip={onClickToolTip}
                                     />
                                 ))}
                             </div>
@@ -109,7 +111,7 @@ const Page = () => {
                         ) : null}
                     </section>
 
-                    <section className="overflow-hidden overflow-y-scroll max-w-[692px]">
+                    <section className="overflow-hidden overflow-y-scroll max-w-[782px]">
                         {loading ? (
                             <div className="flex items-center justify-center flex-col gap-4">
                                 <Skeleton />

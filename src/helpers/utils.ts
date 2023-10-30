@@ -87,6 +87,7 @@ export const extractYears = (prsData: PRsObject, issueData: IssuesObject) => {
 export function filterObject<Type extends { [s: string]: Array<any> }>(
     toggleFilter: string | null,
     yearlyFilter: string | null,
+    toolTipKey: string | null,
     data: Type
 ): Type {
     const filteredObject: any = {}
@@ -142,11 +143,15 @@ const months = [
     "Dec"
 ]
 
-export const getYearlyContributions = (year: string, data: PRsObject) => {
+export const getYearlyContributions = (
+    year: string,
+    prsData: PRsObject,
+    issueData: IssuesObject
+) => {
     const monthsObject: Record<string, Array<any>> = {}
     const contributions: Contributions = {}
 
-    const extractDates = Object.values(data)
+    const extractPrDates = Object.values(prsData)
         .map((set) => {
             return set
                 .filter(
@@ -156,11 +161,23 @@ export const getYearlyContributions = (year: string, data: PRsObject) => {
         })
         .flat()
 
+    const extractIssueDates = Object.values(issueData)
+        .map((set) => {
+            return set
+                .filter(
+                    (item) => item.createdAt.toString().slice(0, 4) === year
+                )
+                .map((x) => new Date(x.createdAt).toDateString())
+        })
+        .flat()
+
+    const allDates = [...extractPrDates, ...extractIssueDates]
+
     for (let m = 0; m < months.length; m++) {
         const monthElem = months[m]
 
-        for (let index = 0; index < extractDates.length; index++) {
-            const dateElem = extractDates[index]
+        for (let index = 0; index < allDates.length; index++) {
+            const dateElem = allDates[index]
 
             if (dateElem.includes(monthElem)) {
                 const dates = monthsObject[monthElem] ?? []
@@ -193,7 +210,7 @@ export const getYearlyContributions = (year: string, data: PRsObject) => {
         })
     }
 
-    return { extractDates, year, contributions }
+    return { year, contributions }
 }
 
 export const createGridSet = (year: string) => {
@@ -226,15 +243,18 @@ export const generateGraphValues = (
 ) => {
     const graphValues = gridSet.map((sect) => {
         if (!contributions?.[sect.month]) {
-            return Array.from(sect.boxes).map((day) => ({
+            return sect.boxes.map((day) => ({
                 ...day,
                 is_active: false,
-                desc: `No contributions on ${sect.month} ${day.day}`
+                desc: `No contributions on ${sect.month} ${day.day}`,
+                date: `${sect.month} ${day.day}`,
+                activity: []
             }))
         } else {
-            const addContributions = Array.from(sect.boxes).map((contrib) => {
+            const addContributions = sect.boxes.map((contrib) => {
                 const activity = contributions[sect.month][contrib.day] ?? []
                 const activity_count = activity.length
+                const date = ` ${sect.month} ${contrib.day}`
                 const desc =
                     activity_count === 0
                         ? `No contribution on ${sect.month} ${contrib.day}`
@@ -246,13 +266,17 @@ export const generateGraphValues = (
                     return {
                         ...contrib,
                         is_active: false,
-                        desc
+                        desc,
+                        date,
+                        activity
                     }
                 } else {
                     return {
                         ...contrib,
                         is_active: true,
-                        desc
+                        desc,
+                        date,
+                        activity
                     }
                 }
             })

@@ -16,7 +16,7 @@ import {
     getOrganisations,
     getYearlyContributions
 } from "@/helpers/utils"
-import { IssuesObject } from '@/types/comments'
+import { IssuesObject } from "@/types/comments"
 
 export const useGithubIssues = () => {
     const searchParams = useSearchParams()
@@ -29,6 +29,7 @@ export const useGithubIssues = () => {
     const [projects, setProjects] = useState<Array<Project>>([])
     const [toggleFilter, setToggleFilter] = useState<string | null>("")
     const [yearlyFilter, setYearlyFilter] = useState<string | null>(currentYear)
+    const [toolTipKey, setToolTipKey] = useState<string | null>("")
     const [issuesObject, setIssuesObject] = useState<IssuesObject>({
         ownIssueComments: [],
         longIssueComments: [],
@@ -124,18 +125,23 @@ export const useGithubIssues = () => {
     }, [username])
 
     const memoizedIssues = useMemo(
-        () => filterObject(toggleFilter, yearlyFilter, issuesObject),
-        [issuesObject, toggleFilter, yearlyFilter]
+        () =>
+            filterObject(toggleFilter, yearlyFilter, toolTipKey, issuesObject),
+        [issuesObject, toggleFilter, toolTipKey, yearlyFilter]
     )
 
     const memoizedPrs = useMemo(
-        () => filterObject(toggleFilter, yearlyFilter, prsObject),
-        [prsObject, toggleFilter, yearlyFilter]
+        () => filterObject(toggleFilter, yearlyFilter, toolTipKey, prsObject),
+        [prsObject, toggleFilter, toolTipKey, yearlyFilter]
     )
 
     const { years } = extractYears(prsObject, issuesObject)
 
-    const { contributions } = getYearlyContributions(yearlyFilter!, prsObject)
+    const { contributions } = getYearlyContributions(
+        yearlyFilter!,
+        prsObject,
+        issuesObject
+    )
     const { gridSet } = createGridSet(yearlyFilter!)
 
     const memoizedGraphValues = useMemo(
@@ -151,6 +157,23 @@ export const useGithubIssues = () => {
         setYearlyFilter((prev) => (prev === key ? null : key))
     }
 
+    const onClickToolTip = (content: {
+        is_active: boolean
+        desc: string
+        day: number
+        date: string
+        activity: string[]
+    }) => {
+        if (!content.activity.length) {
+            return `No content for ${content.date}`
+        } else {
+            console.log(content.date, "CLICKED KEY")
+            return setToolTipKey((prev) =>
+                prev === content.date ? null : content.date
+            )
+        }
+    }
+
     return {
         projects,
         loading,
@@ -162,6 +185,7 @@ export const useGithubIssues = () => {
         yearlyFilter,
         handleYearlyFilter,
         years,
-        memoizedGraphValues
+        memoizedGraphValues,
+        onClickToolTip
     }
 }
