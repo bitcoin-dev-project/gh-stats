@@ -1,4 +1,4 @@
-import { Contributions, GridSet } from "@/types"
+import { Contribution, Contributions, GridSet } from "@/types"
 import { Comment, IssuesObject } from "@/types/comments"
 import { Project, PRsObject } from "@/types/pull_requests"
 
@@ -12,13 +12,15 @@ export const contentHeading = (
     issues: Comment[],
     type: "own" | "others" | "long"
 ) => {
-    return type === "long" && issues.length === 1
-        ? `${issues.length} long comment on issues`
-        : type !== "long" && issues.length === 1
-        ? `${issues.length} comment on ${type} issues`
-        : type === "long" && issues.length > 1
-        ? `${issues.length} long comments on issues`
-        : `${issues.length} comments on ${type} issues`
+    if (type === "long" && issues.length === 1) {
+        return `${issues.length} long comment on issues`
+    } else if (type !== "long" && issues.length === 1) {
+        return `${issues.length} comment on ${type} issues`
+    } else if (type === "long" && issues.length > 1) {
+        return `${issues.length} long comments on issues`
+    } else {
+        return `${issues.length} comments on ${type} issues`
+    }
 }
 
 export const collapsibleHeader = (repoUrl: string, username: string) => {
@@ -190,7 +192,10 @@ export const getYearlyContributions = (
     prsData: PRsObject,
     issueData: IssuesObject
 ) => {
-    const monthsObject: Record<string, Array<any>> = {}
+    const monthsObject: Record<
+        string,
+        Array<{ date: string; type: string }>
+    > = {}
     const contributions: Contributions = {}
 
     const extractPrDates = Object.values(prsData)
@@ -199,7 +204,12 @@ export const getYearlyContributions = (
                 .filter(
                     (item) => item.createdAt.toString().slice(0, 4) === year
                 )
-                .map((x) => new Date(x.createdAt).toDateString())
+                .map((x) => {
+                    return {
+                        date: new Date(x.createdAt).toDateString(),
+                        type: "prs"
+                    }
+                })
         })
         .flat()
 
@@ -209,7 +219,12 @@ export const getYearlyContributions = (
                 .filter(
                     (item) => item.createdAt.toString().slice(0, 4) === year
                 )
-                .map((x) => new Date(x.createdAt).toDateString())
+                .map((x) => {
+                    return {
+                        date: new Date(x.createdAt).toDateString(),
+                        type: "issues"
+                    }
+                })
         })
         .flat()
 
@@ -221,7 +236,7 @@ export const getYearlyContributions = (
         for (let index = 0; index < allDates.length; index++) {
             const dateElem = allDates[index]
 
-            if (dateElem.includes(monthElem)) {
+            if (dateElem.date.includes(monthElem)) {
                 const dates = monthsObject[monthElem] ?? []
                 monthsObject[monthElem] = [...dates, dateElem]
             }
@@ -230,14 +245,17 @@ export const getYearlyContributions = (
 
     for (const [key, value] of Object.entries(monthsObject)) {
         const sorted = value
-            .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+            .sort(
+                (a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+            )
             .reduce((a, c) => {
-                const key = c
+                const key = c.date
 
                 const currGroup = a[key] ?? []
 
                 return { ...a, [key]: [...currGroup, c] }
-            }, {})
+            }, {} as any)
 
         contributions[key] = sorted
     }
@@ -331,4 +349,28 @@ export const generateGraphValues = (
     })
 
     return graphValues.flat()
+}
+
+export const boxColor = (arg: Contribution) => {
+    const { activity, is_active } = arg
+
+    if (!activity.length || is_active === false) {
+        return "bg-grid-gray"
+    } else {
+        if (activity) {
+            const allTypes = Array.from(new Set(activity.map((x) => x.type)))
+
+            if (allTypes.length === 1) {
+                if (allTypes.includes("issues")) {
+                    return "bg-grid-yellow"
+                } else if (allTypes.includes("prs")) {
+                    return "bg-grid-blue"
+                } else {
+                    return "bg-grid-gray"
+                }
+            } else {
+                return "bg-grid-green"
+            }
+        }
+    }
 }

@@ -139,7 +139,7 @@ export const useGithubIssues = () => {
     const { years } = extractYears(prsObject, issuesObject)
 
     const { contributions } = getYearlyContributions(
-        yearlyFilter!,
+        yearlyFilter,
         prsObject,
         issuesObject
     )

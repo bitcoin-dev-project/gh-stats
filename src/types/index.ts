@@ -1,4 +1,7 @@
-export type Contributions = Record<string, Record<string, Array<string>>>
+export type Contributions = Record<
+    string,
+    Record<string, Array<{ date: string; type: string }>>
+>
 
 export type GridSet = {
     month: string
@@ -11,5 +14,5 @@ export type Contribution = {
     desc: string
     day: number
     date: string
-    activity: string[]
+    activity: Array<{ date: string; type: string }>
 }

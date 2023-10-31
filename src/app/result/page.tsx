@@ -56,6 +56,7 @@ const Page = () => {
                                         key={`${day.day}_${idx}`}
                                         content={day}
                                         onClickToolTip={onClickToolTip}
+                                        loading={loading}
                                     />
                                 ))}
                             </div>

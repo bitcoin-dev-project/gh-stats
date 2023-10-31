@@ -1,13 +1,16 @@
 import React from "react"
 import * as Tooltip from "@radix-ui/react-tooltip"
 import { Contribution } from "@/types"
+import { boxColor } from "@/helpers/utils"
 
 const ToolTip = ({
     content,
-    onClickToolTip
+    onClickToolTip,
+    loading
 }: {
     content: Contribution
     onClickToolTip: (content: Contribution) => void
+    loading: boolean
 }) => {
     return (
         <Tooltip.Provider>
@@ -15,11 +18,9 @@ const ToolTip = ({
                 <Tooltip.Trigger asChild>
                     <button onClick={() => onClickToolTip(content)}>
                         <p
-                            className={`rounded-sm p-1 h-[10px] w-[10px] cursor-pointer ${
-                                content.is_active
-                                    ? "bg-grid-green"
-                                    : "bg-grid-gray"
-                            }`}
+                            className={`rounded-sm p-1 h-[10px] w-[10px] cursor-pointer ${boxColor(
+                                content
+                            )} ${loading ? "animate-pulse" : "animate-none"}`}
                         ></p>
                     </button>
                 </Tooltip.Trigger>
