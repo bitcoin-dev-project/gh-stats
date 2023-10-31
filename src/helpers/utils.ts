@@ -86,11 +86,50 @@ export const extractYears = (prsData: PRsObject, issueData: IssuesObject) => {
 
 export function filterObject<Type extends { [s: string]: Array<any> }>(
     toggleFilter: string | null,
-    yearlyFilter: string | null,
+    yearlyFilter: string,
     toolTipKey: string | null,
     data: Type
 ): Type {
     const filteredObject: any = {}
+
+    if (toolTipKey) {
+        for (const [key, value] of Object.entries(data)) {
+            filteredObject[key] = value.filter((x) => {
+                const result_date = new Date(x.createdAt)
+                    .toDateString()
+                    .split(" ")
+                    .slice(1, 3)
+                    .join(" ")
+
+                return (
+                    x.createdAt.toString().slice(0, 4) === yearlyFilter &&
+                    result_date === toolTipKey
+                )
+            })
+
+            if (toggleFilter) {
+                for (const [key, value] of Object.entries(data)) {
+                    filteredObject[key] = value.filter((x) => {
+                        const result_date = new Date(x.createdAt)
+                            .toDateString()
+                            .split(" ")
+                            .slice(1, 3)
+                            .join(" ")
+
+                        return (
+                            x.createdAt.toString().slice(0, 4) ===
+                                yearlyFilter &&
+                            result_date === toolTipKey &&
+                            x.project?.login?.toLowerCase() ===
+                                toggleFilter?.toLowerCase()
+                        )
+                    })
+                }
+            }
+        }
+
+        return filteredObject
+    }
 
     if (toggleFilter) {
         for (const [key, value] of Object.entries(data)) {
@@ -114,8 +153,11 @@ export function filterObject<Type extends { [s: string]: Array<any> }>(
                 }
             }
         }
+
         return filteredObject
-    } else if (yearlyFilter) {
+    }
+
+    if (yearlyFilter) {
         for (const [key, value] of Object.entries(data)) {
             filteredObject[key] = value.filter(
                 (x) => x.createdAt.toString().slice(0, 4) === yearlyFilter
@@ -254,7 +296,10 @@ export const generateGraphValues = (
             const addContributions = sect.boxes.map((contrib) => {
                 const activity = contributions[sect.month][contrib.day] ?? []
                 const activity_count = activity.length
-                const date = ` ${sect.month} ${contrib.day}`
+                const day =
+                    Number(contrib.day) <= 9 ? `0${contrib.day}` : contrib.day
+
+                const date = `${sect.month} ${day}`
                 const desc =
                     activity_count === 0
                         ? `No contribution on ${sect.month} ${contrib.day}`

@@ -17,6 +17,7 @@ import {
     getYearlyContributions
 } from "@/helpers/utils"
 import { IssuesObject } from "@/types/comments"
+import { Contribution } from "@/types"
 
 export const useGithubIssues = () => {
     const searchParams = useSearchParams()
@@ -28,7 +29,7 @@ export const useGithubIssues = () => {
     const [error, setError] = useState(null)
     const [projects, setProjects] = useState<Array<Project>>([])
     const [toggleFilter, setToggleFilter] = useState<string | null>("")
-    const [yearlyFilter, setYearlyFilter] = useState<string | null>(currentYear)
+    const [yearlyFilter, setYearlyFilter] = useState<string>(currentYear)
     const [toolTipKey, setToolTipKey] = useState<string | null>("")
     const [issuesObject, setIssuesObject] = useState<IssuesObject>({
         ownIssueComments: [],
@@ -154,20 +155,13 @@ export const useGithubIssues = () => {
     }
 
     const handleYearlyFilter = (key: string) => {
-        setYearlyFilter((prev) => (prev === key ? null : key))
+        setYearlyFilter((prev) => (prev === key ? prev : key))
     }
 
-    const onClickToolTip = (content: {
-        is_active: boolean
-        desc: string
-        day: number
-        date: string
-        activity: string[]
-    }) => {
+    const onClickToolTip = (content: Contribution) => {
         if (!content.activity.length) {
             return `No content for ${content.date}`
         } else {
-            console.log(content.date, "CLICKED KEY")
             return setToolTipKey((prev) =>
                 prev === content.date ? null : content.date
             )
