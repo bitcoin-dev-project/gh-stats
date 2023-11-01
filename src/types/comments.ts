@@ -7,6 +7,13 @@ export type Comment = {
     project: { login: string; avatarUrl: string }
 }
 
+
+export type IssuesObject = {
+    ownIssueComments: Comment[]
+    longIssueComments: Comment[]
+    othersIssueComments: Comment[]
+}
+
 export type Issue = {
     author: {
         login: string

@@ -1,5 +1,3 @@
-import { Comment } from "./comments"
-
 export type PR = {
     totalComments: number
     daysOpened: number
@@ -7,7 +5,7 @@ export type PR = {
     repoUrl: string
     title: string
     avatarUrl: string
-    project: { login: string; avatarUrl: string }
+    project: Project
     createdAt: string | number | Date
 }
 
@@ -17,12 +15,6 @@ export type PullRequests = {
     openInactivePRs: PR[]
     closedPRs: PR[]
     closedPRsByOthers: PR[]
-}
-
-export type IssuesObject = {
-    ownIssueComments: Comment[]
-    longIssueComments: Comment[]
-    othersIssueComments: Comment[]
 }
 
 export type PRsObject = {

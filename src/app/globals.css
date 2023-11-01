@@ -25,3 +25,7 @@ body {
         )
         rgb(var(--background-start-rgb));
 }
+
+.gridBox {
+    grid-template-rows: repeat(7, minmax(0, 1fr));
+}
