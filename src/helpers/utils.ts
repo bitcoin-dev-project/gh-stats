@@ -279,8 +279,15 @@ export const createGridSet = (year: string) => {
     const monthsNIndex = months.map((month) => {
         if (!isLeapYear && month === "Feb") {
             return { month, boxes: 28, is_active: false }
+        } else if (
+            month === "Apr" ||
+            month === "Jun" ||
+            month === "Sep" ||
+            month === "Nov"
+        ) {
+            return { month, boxes: 30, is_active: false }
         } else {
-            return { month, boxes: 35, is_active: false }
+            return { month, boxes: 31, is_active: false }
         }
     })
 
