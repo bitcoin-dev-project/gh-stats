@@ -18,9 +18,10 @@ const ToolTip = ({
                 <Tooltip.Trigger asChild>
                     <button onClick={() => onClickToolTip(content)}>
                         <p
-                            className={`rounded-sm p-1 h-[10px] w-[10px] cursor-pointer ${boxColor(
-                                content
-                            )} ${loading ? "animate-pulse" : "animate-none"}`}
+                            className={`rounded-sm p-1 h-[10px] w-[10px] cursor-pointer ${
+                                loading ? "animate-pulse" : "animate-none"
+                            }`}
+                            style={{ backgroundColor: boxColor(content) }}
                         ></p>
                     </button>
                 </Tooltip.Trigger>

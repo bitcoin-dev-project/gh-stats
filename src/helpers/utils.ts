@@ -355,21 +355,21 @@ export const boxColor = (arg: Contribution) => {
     const { activity, is_active } = arg
 
     if (!activity.length || is_active === false) {
-        return "bg-grid-gray"
+        return "#EEEEEE"
     } else {
         if (activity) {
             const allTypes = Array.from(new Set(activity.map((x) => x.type)))
 
             if (allTypes.length === 1) {
                 if (allTypes.includes("issues")) {
-                    return "bg-grid-yellow"
+                    return "#E7C23E"
                 } else if (allTypes.includes("prs")) {
-                    return "bg-grid-blue"
+                    return "#0783F5"
                 } else {
-                    return "bg-grid-gray"
+                    return "#EEEEEE"
                 }
             } else {
-                return "bg-grid-green"
+                return "#39D353"
             }
         }
     }
