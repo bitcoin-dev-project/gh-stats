@@ -49,7 +49,7 @@ const Page = () => {
                                 </button>
                             </section>
                         </div>
-                        <div className="h-[82px] max-w-full w-full overflow-x-scroll">
+                        <div className="max-w-full w-full overflow-x-auto">
                             <div className="gap-[2px] grid grid-flow-col h-full gridBox">
                                 {memoizedGraphValues.map((day, idx) => (
                                     <ToolTip
