@@ -1,4 +1,12 @@
-import { Contribution, Contributions, GridSet } from "@/types"
+import {
+    Contribution,
+    Contributions,
+    GridSet,
+    GRID_BLUE,
+    GRID_GRAY,
+    GRID_GREEN,
+    GRID_YELLOW
+} from "@/types"
 import { Comment, IssuesObject } from "@/types/comments"
 import { Project, PRsObject } from "@/types/pull_requests"
 
@@ -172,7 +180,7 @@ export function filterObject<Type extends { [s: string]: Array<any> }>(
     }
 }
 
-const months = [
+export const months = [
     "Jan",
     "Feb",
     "Mar",
@@ -186,6 +194,8 @@ const months = [
     "Nov",
     "Dec"
 ]
+
+const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 export const getYearlyContributions = (
     year: string,
@@ -362,21 +372,21 @@ export const boxColor = (arg: Contribution) => {
     const { activity, is_active } = arg
 
     if (!activity.length || is_active === false) {
-        return "#EEEEEE"
+        return GRID_GRAY
     } else {
         if (activity) {
             const allTypes = Array.from(new Set(activity.map((x) => x.type)))
 
             if (allTypes.length === 1) {
                 if (allTypes.includes("issues")) {
-                    return "#E7C23E"
+                    return GRID_YELLOW
                 } else if (allTypes.includes("prs")) {
-                    return "#0783F5"
+                    return GRID_BLUE
                 } else {
-                    return "#EEEEEE"
+                    return GRID_GRAY
                 }
             } else {
-                return "#39D353"
+                return GRID_GREEN
             }
         }
     }
