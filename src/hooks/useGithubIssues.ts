@@ -7,7 +7,7 @@ import {
 } from "@/helpers/get-comments"
 import { getPullRequests } from "@/helpers/get-pull-requests"
 import { Project, PRsObject } from "@/types/pull_requests"
-import { useSearchParams } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import {
     createGridSet,
     extractYears,
@@ -20,6 +20,7 @@ import { IssuesObject } from "@/types/comments"
 import { Contribution } from "@/types"
 
 export const useGithubIssues = () => {
+    const Router = useRouter()
     const searchParams = useSearchParams()
     const username = searchParams.get("username")
     const currentDate = new Date()
@@ -168,6 +169,8 @@ export const useGithubIssues = () => {
         }
     }
 
+    const goBack = () => Router.back()
+
     return {
         projects,
         loading,
@@ -180,6 +183,6 @@ export const useGithubIssues = () => {
         handleYearlyFilter,
         years,
         memoizedGraphValues,
-        onClickToolTip
+        onClickToolTip, goBack
     }
 }
