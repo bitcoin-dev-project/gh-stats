@@ -29,3 +29,14 @@ body {
 .gridBox {
     grid-template-rows: repeat(7, minmax(0, 1fr));
 }
+
+.arrowLeftIcon {
+    padding: 5px;
+    border-radius: 4px;
+    height: 32px;
+    width: 32px;
+}
+
+.arrowLeftIcon:hover {
+    background-color: #eeeeee;
+}

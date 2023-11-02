@@ -37,13 +37,16 @@ const Page = () => {
             >
                 <div className="w-full flex flex-col sm:border-2 md:p-8 md:pt-0 sm:pb-2 p-4 pt-0 gap-6 h-screen overflow-x-scroll">
                     <section className="flex flex-col gap-4 pt-9">
-                        <ArrowLeftIcon
-                            color="black"
-                            onClick={goBack}
-                            cursor="pointer"
-                            height="20px"
-                            width="20px"
-                        />
+                        <button>
+                            <ArrowLeftIcon
+                                color="black"
+                                onClick={goBack}
+                                cursor="pointer"
+                                height="20px"
+                                width="20px"
+                                className="arrowLeftIcon"
+                            />
+                        </button>
                         <div className="flex gap-2 flex-col sm:justify-between sm:items-center  sm:flex-row">
                             <h2 className=" text-black capitalize">
                                 {username} contributions
