@@ -32,7 +32,7 @@ const Page = () => {
     return (
         <main className="flex items-center justify-center bg-white">
             <div
-                className="sm:h-screen h-full max-w-5xl flex flex-col-reverse w-full sm:grid sm:justify-center"
+                className="sm:h-screen h-full max-w-5xl flex flex-col-reverse w-full md:grid sm:justify-center"
                 style={{ gridTemplateColumns: "3fr 1fr" }}
             >
                 <div className="w-full flex flex-col sm:border-2 md:p-8 md:pt-0 sm:pb-2 p-4 pt-0 gap-6 h-screen overflow-x-scroll">
@@ -47,7 +47,7 @@ const Page = () => {
                                 className="arrowLeftIcon"
                             />
                         </button>
-                        <div className="flex gap-2 flex-col sm:justify-between sm:items-center  sm:flex-row">
+                        <div className="flex gap-2 flex-col md:justify-between md:items-center  md:flex-row">
                             <h2 className=" text-black capitalize">
                                 {username} contributions
                             </h2>
@@ -72,6 +72,20 @@ const Page = () => {
                                 ))}
                             </div>
                         </div>
+                        <section className="text-black text-xs font-medium flex gap-3 flex-wrap">
+                            <div className="flex items-center gap-1">
+                                <p>Commits</p>
+                                <section className="h-[10px] w-[10px] rounded-[3px] bg-grid-blue"></section>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <p>Comments</p>
+                                <section className="h-[10px] w-[10px] rounded-[3px] bg-grid-yellow"></section>
+                            </div>
+                            <div className="flex items-center gap-1">
+                                <p>Commits & Comments</p>
+                                <section className="h-[10px] w-[10px] rounded-[3px] bg-grid-green"></section>
+                            </div>
+                        </section>
                     </section>
                     <ProjectsBlock
                         projects={projects}
