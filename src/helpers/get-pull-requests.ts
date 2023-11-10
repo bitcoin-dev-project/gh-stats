@@ -1,123 +1,131 @@
 import { CURRENT_DAY, DAYS_TO_INACTIVE, ONE_DAY } from "@/config"
 
-import { PullRequests, PR } from "../types/pull_requests"
+import { PullRequests, PR, PrNodes } from "../types/pull_requests"
 
 export const getPullRequests = ({
     data,
     username
 }: {
-    data: any
+    data: PrNodes[]
     username: string
 }): PullRequests => {
-    const openPRsData = data.pullRequests.edges.filter(
-        (pr: any) => pr.node.closed === false
-    )
-    const openPRs: PR[] = openPRsData.map((pr: any) => ({
-        totalComments: pr.node.totalCommentsCount,
+    data = data?.filter((x) => x?.pullRequest !== undefined)
+
+    const openPRsData = data?.filter((pr) => pr?.pullRequest?.closed === false)
+
+    const openPRs: PR[] = openPRsData?.map((pr) => ({
+        totalComments: pr?.pullRequest?.totalCommentsCount,
         daysOpened: Math.floor(
-            (CURRENT_DAY - new Date(pr.node.createdAt).getTime()) / ONE_DAY
+            (CURRENT_DAY - new Date(pr?.pullRequest?.createdAt).getTime()) /
+                ONE_DAY
         ),
-        url: pr.node.url,
-        repoUrl: pr.node.repository.url,
-        title: pr.node.title,
-        createdAt: pr.node.createdAt,
-        avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        url: pr?.pullRequest?.url,
+        repoUrl: pr?.pullRequest?.repository.url,
+        title: pr?.pullRequest?.title,
+        createdAt: pr?.pullRequest?.createdAt,
+        avatarUrl: pr?.pullRequest?.author.avatarUrl,
+        project: pr?.pullRequest?.repository.owner
     }))
 
-    const openInactivePRsData = openPRsData.filter(
-        (pr: any) =>
+    const openInactivePRsData = openPRsData?.filter(
+        (pr) =>
             Math.floor(
-                (CURRENT_DAY - new Date(pr.node.createdAt).getTime()) / ONE_DAY
+                (CURRENT_DAY - new Date(pr?.pullRequest.createdAt).getTime()) /
+                    ONE_DAY
             ) > DAYS_TO_INACTIVE
     )
-    const openInactivePRs: PR[] = openInactivePRsData.map((pr: any) => ({
-        totalComments: pr.node.totalCommentsCount,
-        daysOpened: Math.floor(
-            (CURRENT_DAY - new Date(pr.node.createdAt).getTime()) / ONE_DAY
-        ),
-        url: pr.node.url,
-        repoUrl: pr.node.repository.url,
-        title: pr.node.title,
-        createdAt: pr.node.createdAt,
-        avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
-    }))
 
-    const closedPRsData = data.pullRequests.edges.filter(
-        (pr: any) => pr.node.closed === true && pr.node.merged === false
-    )
-    const closedPRs: PR[] = closedPRsData.map((pr: any) => ({
-        totalComments: pr.node.totalCommentsCount,
+    const openInactivePRs: PR[] = openInactivePRsData?.map((pr) => ({
+        totalComments: pr?.pullRequest?.totalCommentsCount,
         daysOpened: Math.floor(
-            (new Date(pr.node.closedAt).getTime() -
-                new Date(pr.node.createdAt).getTime()) /
+            (CURRENT_DAY - new Date(pr?.pullRequest?.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.node.url,
-        repoUrl: pr.node.repository.url,
-        title: pr.node.title,
-        createdAt: pr.node.createdAt,
-        avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        url: pr?.pullRequest?.url,
+        repoUrl: pr?.pullRequest?.repository.url,
+        title: pr?.pullRequest?.title,
+        createdAt: pr?.pullRequest?.createdAt,
+        avatarUrl: pr?.pullRequest?.author.avatarUrl,
+        project: pr?.pullRequest?.repository.owner
     }))
 
-    const closedPRsByOthersData = data.pullRequests.edges.filter(
-        (pr: any) =>
-            pr.node.closed === true &&
-            pr.node.merged === true &&
-            pr.node.mergedBy.login !== username
+    const closedPRsData = data?.filter(
+        (pr) =>
+            pr?.pullRequest?.closed === true &&
+            pr?.pullRequest?.merged === false
     )
-    const closedPRsByOthers: PR[] = closedPRsByOthersData.map((pr: any) => ({
-        totalComments: pr.node.totalCommentsCount,
+
+    const closedPRs: PR[] = closedPRsData?.map((pr) => ({
+        totalComments: pr?.pullRequest?.totalCommentsCount,
         daysOpened: Math.floor(
-            (new Date(pr.node.closedAt).getTime() -
-                new Date(pr.node.createdAt).getTime()) /
+            (new Date(pr?.pullRequest?.closedAt).getTime() -
+                new Date(pr?.pullRequest?.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.node.url,
-        repoUrl: pr.node.repository.url,
-        title: pr.node.title,
-        createdAt: pr.node.createdAt,
-        avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        url: pr?.pullRequest?.url,
+        repoUrl: pr?.pullRequest?.repository.url,
+        title: pr?.pullRequest?.title,
+        createdAt: pr?.pullRequest?.createdAt,
+        avatarUrl: pr?.pullRequest?.author.avatarUrl,
+        project: pr?.pullRequest?.repository.owner
     }))
 
-    const mergedPRData = data.pullRequests.edges.filter(
-        (pr: any) => pr.node.merged === true
+    const closedPRsByOthersData = data?.filter(
+        (pr) =>
+            pr?.pullRequest?.closed === true &&
+            pr?.pullRequest?.merged === true &&
+            pr?.pullRequest?.mergedBy.login !== username
     )
-    const mergedPRs: PR[] = mergedPRData.map((pr: any) => ({
-        totalComments: pr.node.totalCommentsCount,
+
+    const closedPRsByOthers: PR[] = closedPRsByOthersData?.map((pr) => ({
+        totalComments: pr?.pullRequest?.totalCommentsCount,
         daysOpened: Math.floor(
-            (new Date(pr.node.mergedAt).getTime() -
-                new Date(pr.node.createdAt).getTime()) /
+            (new Date(pr?.pullRequest?.closedAt).getTime() -
+                new Date(pr?.pullRequest?.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.node.url,
-        repoUrl: pr.node.repository.url,
-        title: pr.node.title,
-        createdAt: pr.node.createdAt,
-        avatarUrl: pr.node.author.avatarUrl,
-        project: pr.node.repository.owner
+        url: pr?.pullRequest?.url,
+        repoUrl: pr?.pullRequest?.repository.url,
+        title: pr?.pullRequest?.title,
+        createdAt: pr?.pullRequest?.createdAt,
+        avatarUrl: pr?.pullRequest?.author.avatarUrl,
+        project: pr?.pullRequest?.repository.owner
     }))
 
-    openPRs.sort(
+    const mergedPRData = data?.filter((pr) => pr?.pullRequest?.merged === true)
+
+    const mergedPRs: PR[] = mergedPRData?.map((pr) => ({
+        totalComments: pr?.pullRequest?.totalCommentsCount,
+        daysOpened: Math.floor(
+            (new Date(pr?.pullRequest?.mergedAt).getTime() -
+                new Date(pr?.pullRequest?.createdAt).getTime()) /
+                ONE_DAY
+        ),
+        url: pr?.pullRequest?.url,
+        repoUrl: pr?.pullRequest?.repository.url,
+        title: pr?.pullRequest?.title,
+        createdAt: pr?.pullRequest?.createdAt,
+        avatarUrl: pr?.pullRequest?.author.avatarUrl,
+        project: pr?.pullRequest?.repository.owner
+    }))
+
+    openPRs?.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    openInactivePRs.sort(
+    openInactivePRs?.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    closedPRs.sort(
+    closedPRs?.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    closedPRsByOthers.sort(
+    closedPRsByOthers?.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    mergedPRs.sort(
+    mergedPRs?.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )

@@ -8,7 +8,7 @@ import {
     GRID_YELLOW
 } from "@/types"
 import { Comment, IssuesObject } from "@/types/comments"
-import { Project, PRsObject } from "@/types/pull_requests"
+import { PrNodes, Project, PRsObject } from "@/types/pull_requests"
 
 export const getIssueNumber = (arg: string) => {
     const splitUrl = arg.split("#")
@@ -42,19 +42,19 @@ export const collapsibleHeader = (repoUrl: string, username: string) => {
 }
 
 export const getOrganisations = (
-    prsData: any,
+    prsData: PrNodes[],
     issueData: any,
     username: string
 ) => {
-    const prOrgs: Array<Project> = prsData?.pullRequests?.edges
-        .filter(
-            (pr: any) =>
-                pr.node.repository.owner.login.toLowerCase() !==
-                username.toLowerCase()
+    const prOrgs: Array<Project> = prsData
+        ?.filter(
+            (pr) =>
+                pr?.pullRequest?.repository.owner.login.toLowerCase() !==
+                    username.toLowerCase() && pr?.pullRequest !== undefined
         )
-        .map((pr: any) => ({
-            login: pr.node.repository.owner.login,
-            avatarUrl: pr.node.repository.owner.avatarUrl
+        .map((pr) => ({
+            login: pr?.pullRequest?.repository.owner.login,
+            avatarUrl: pr?.pullRequest?.repository.owner.avatarUrl
         }))
 
     const issueOrgs: Array<Project> = issueData?.issueComments?.nodes
@@ -96,7 +96,6 @@ export const extractYears = (prsData: PRsObject, issueData: IssuesObject) => {
 
 export function filterObject<Type extends { [s: string]: Array<any> }>(
     toggleFilter: string | null,
-    yearlyFilter: string,
     toolTipKey: string | null,
     data: Type
 ): Type {
@@ -111,10 +110,7 @@ export function filterObject<Type extends { [s: string]: Array<any> }>(
                     .slice(1, 3)
                     .join(" ")
 
-                return (
-                    x.createdAt.toString().slice(0, 4) === yearlyFilter &&
-                    result_date === toolTipKey
-                )
+                return result_date === toolTipKey
             })
 
             if (toggleFilter) {
@@ -127,8 +123,6 @@ export function filterObject<Type extends { [s: string]: Array<any> }>(
                             .join(" ")
 
                         return (
-                            x.createdAt.toString().slice(0, 4) ===
-                                yearlyFilter &&
                             result_date === toolTipKey &&
                             x.project?.login?.toLowerCase() ===
                                 toggleFilter?.toLowerCase()
@@ -147,30 +141,6 @@ export function filterObject<Type extends { [s: string]: Array<any> }>(
                 (x) =>
                     x.project?.login?.toLowerCase() ===
                     toggleFilter?.toLowerCase()
-            )
-
-            if (yearlyFilter) {
-                for (const [key, value] of Object.entries(
-                    filteredObject as Type
-                )) {
-                    filteredObject[key] = value.filter(
-                        (x) =>
-                            x.createdAt.toString().slice(0, 4) ===
-                                yearlyFilter &&
-                            x.project?.login?.toLowerCase() ===
-                                toggleFilter?.toLowerCase()
-                    )
-                }
-            }
-        }
-
-        return filteredObject
-    }
-
-    if (yearlyFilter) {
-        for (const [key, value] of Object.entries(data)) {
-            filteredObject[key] = value.filter(
-                (x) => x.createdAt.toString().slice(0, 4) === yearlyFilter
             )
         }
 
@@ -198,7 +168,6 @@ export const months = [
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 export const getYearlyContributions = (
-    year: string,
     prsData: PRsObject,
     issueData: IssuesObject
 ) => {
@@ -210,31 +179,23 @@ export const getYearlyContributions = (
 
     const extractPrDates = Object.values(prsData)
         .map((set) => {
-            return set
-                .filter(
-                    (item) => item.createdAt.toString().slice(0, 4) === year
-                )
-                .map((x) => {
-                    return {
-                        date: new Date(x.createdAt).toDateString(),
-                        type: "prs"
-                    }
-                })
+            return set.map((x) => {
+                return {
+                    date: new Date(x.createdAt).toDateString(),
+                    type: "prs"
+                }
+            })
         })
         .flat()
 
     const extractIssueDates = Object.values(issueData)
         .map((set) => {
-            return set
-                .filter(
-                    (item) => item.createdAt.toString().slice(0, 4) === year
-                )
-                .map((x) => {
-                    return {
-                        date: new Date(x.createdAt).toDateString(),
-                        type: "issues"
-                    }
-                })
+            return set.map((x) => {
+                return {
+                    date: new Date(x.createdAt).toDateString(),
+                    type: "issues"
+                }
+            })
         })
         .flat()
 
@@ -280,7 +241,7 @@ export const getYearlyContributions = (
         })
     }
 
-    return { year, contributions }
+    return { contributions }
 }
 
 export const createGridSet = (year: string) => {
