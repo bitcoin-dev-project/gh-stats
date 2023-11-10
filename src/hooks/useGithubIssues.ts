@@ -74,12 +74,23 @@ export const useGithubIssues = () => {
             }))
             setProjects([])
             setYears([])
+
+            const endCursor = localStorage.getItem("end_cursor") as string
+
             const { issues, prs, ranged_prs, ranged_issues, years } =
                 await fetchIssues({
                     username: username as string,
                     startDate,
-                    endDate
+                    endDate,
+                    endCursor
                 })
+            console.log(ranged_issues?.data, "RANGED ISSUES")
+            console.log(ranged_prs?.data, "RANGED PRS")
+
+            localStorage.setItem(
+                "end_cursor",
+                ranged_issues?.endCursorObj?.end_cursor
+            )
 
             setLoading(false)
 
@@ -91,14 +102,14 @@ export const useGithubIssues = () => {
             }
 
             const issue = getOwnComments({
-                data: issues.data,
+                data: ranged_issues?.data!,
                 username: username as string
             })
             const longIssue = getLongComments({
-                data: issues.data
+                data: ranged_issues?.data!
             })
             const othersIssue = getOthersComments({
-                data: issues.data,
+                data: ranged_issues?.data!,
                 username: username as string
             })
 

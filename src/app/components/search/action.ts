@@ -9,11 +9,13 @@ import { getGithubPrsData } from "@/helpers/get-prs-data"
 export const fetchIssues = async ({
     username,
     startDate,
-    endDate
+    endDate,
+    endCursor
 }: {
     username: string
     startDate?: string
     endDate?: string
+    endCursor: string
 }) => {
     const session = await auth()
     const token = session?.accessToken
@@ -50,7 +52,8 @@ export const fetchIssues = async ({
             username,
             token,
             query: "FETCH_RANGED_COMMENTS",
-            startDate
+            startDate,
+            endCursor
         })
     ])
 
@@ -60,5 +63,11 @@ export const fetchIssues = async ({
     const ranged_prs = ranged_response[0]
     const ranged_issues = ranged_response[1]
 
-    return { issues, prs, years, ranged_prs, ranged_issues }
+    return {
+        issues,
+        prs,
+        years,
+        ranged_prs,
+        ranged_issues
+    }
 }

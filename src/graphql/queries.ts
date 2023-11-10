@@ -105,9 +105,9 @@ export const FETCH_RANGED_PRS = `query contributions($username: String!, $startD
   }
 }`
 
-export const FETCH_RANGED_COMMENTS = `query ($username: String!) {
+export const FETCH_RANGED_COMMENTS = `query ($username: String!, $endCursor: String) {
   user(login: $username) {
-    issueComments(last: 100) {
+    issueComments(first: 100, orderBy: {field: UPDATED_AT, direction: DESC}, after: $endCursor) {
       pageInfo {
         hasNextPage
         startCursor

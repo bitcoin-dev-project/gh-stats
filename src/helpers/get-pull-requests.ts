@@ -109,23 +109,23 @@ export const getPullRequests = ({
         project: pr?.pullRequest?.repository.owner
     }))
 
-    openPRs?.sort(
+    openPRs.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    openInactivePRs?.sort(
+    openInactivePRs.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    closedPRs?.sort(
+    closedPRs.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    closedPRsByOthers?.sort(
+    closedPRsByOthers.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
-    mergedPRs?.sort(
+    mergedPRs.sort(
         (a, b) =>
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     )
