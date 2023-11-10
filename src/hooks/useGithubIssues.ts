@@ -30,6 +30,7 @@ export const useGithubIssues = () => {
     const [error, setError] = useState(null)
     const [projects, setProjects] = useState<Array<Project>>([])
     const [toggleFilter, setToggleFilter] = useState<string | null>("")
+    const [years, setYears] = useState<Array<string>>([])
     const [yearlyFilter, setYearlyFilter] = useState<string>(currentYear)
     const [toolTipKey, setToolTipKey] = useState<string | null>("")
     const [issuesObject, setIssuesObject] = useState<IssuesObject>({
@@ -44,6 +45,9 @@ export const useGithubIssues = () => {
         closedPrsByOthers: [],
         mergedPrs: []
     })
+
+    const startDate = new Date(Number(yearlyFilter), 0, 1, 4).toISOString()
+    const endDate = new Date(Number(yearlyFilter), 12, 0, 4).toISOString()
 
     useEffect(() => {
         const fetchGithubIssues = async () => {
@@ -69,15 +73,20 @@ export const useGithubIssues = () => {
                 mergedPrs: []
             }))
             setProjects([])
-            const { issues, prs } = await fetchIssues({
-                username: username as string
-            })
+            setYears([])
+            const { issues, prs, ranged_prs, ranged_issues, years } =
+                await fetchIssues({
+                    username: username as string,
+                    startDate,
+                    endDate
+                })
 
             setLoading(false)
 
             if (issues.error || prs.error) {
                 console.error(issues.error, "error")
                 setError(issues.error[0].message || prs.error[0].message)
+                setLoading(false)
                 return
             }
 
@@ -92,6 +101,7 @@ export const useGithubIssues = () => {
                 data: issues.data,
                 username: username as string
             })
+
             const {
                 closedPRs,
                 closedPRsByOthers,
@@ -99,12 +109,17 @@ export const useGithubIssues = () => {
                 openInactivePRs,
                 openPRs
             } = getPullRequests({
-                data: prs.data,
+                data: ranged_prs.data!,
                 username: username as string
             })
-            const { orgs } = getOrganisations(prs.data, issues.data, username)
+            const { orgs } = getOrganisations(
+                ranged_prs?.data!,
+                issues.data,
+                username
+            )
 
             setProjects(orgs)
+            setYears(years.data!)
 
             setIssuesObject((prev) => ({
                 ...prev,
@@ -124,26 +139,19 @@ export const useGithubIssues = () => {
         }
 
         fetchGithubIssues()
-    }, [username])
+    }, [endDate, startDate, username])
 
     const memoizedIssues = useMemo(
-        () =>
-            filterObject(toggleFilter, yearlyFilter, toolTipKey, issuesObject),
-        [issuesObject, toggleFilter, toolTipKey, yearlyFilter]
+        () => filterObject(toggleFilter, toolTipKey, issuesObject),
+        [issuesObject, toggleFilter, toolTipKey]
     )
 
     const memoizedPrs = useMemo(
-        () => filterObject(toggleFilter, yearlyFilter, toolTipKey, prsObject),
-        [prsObject, toggleFilter, toolTipKey, yearlyFilter]
+        () => filterObject(toggleFilter, toolTipKey, prsObject),
+        [prsObject, toggleFilter, toolTipKey]
     )
 
-    const { years } = extractYears(prsObject, issuesObject)
-
-    const { contributions } = getYearlyContributions(
-        yearlyFilter,
-        prsObject,
-        issuesObject
-    )
+    const { contributions } = getYearlyContributions(prsObject, issuesObject)
     const { gridSet } = createGridSet(yearlyFilter!)
 
     const memoizedGraphValues = useMemo(
@@ -156,7 +164,8 @@ export const useGithubIssues = () => {
     }
 
     const handleYearlyFilter = (key: string) => {
-        setYearlyFilter((prev) => (prev === key ? prev : key))
+        if (key === yearlyFilter) return
+        setYearlyFilter(key)
     }
 
     const onClickToolTip = (content: Contribution) => {
@@ -183,6 +192,7 @@ export const useGithubIssues = () => {
         handleYearlyFilter,
         years,
         memoizedGraphValues,
-        onClickToolTip, goBack
+        onClickToolTip,
+        goBack
     }
 }
