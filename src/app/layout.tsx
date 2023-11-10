@@ -28,6 +28,13 @@ export const metadata: Metadata = {
         card: "summary",
         creator: "@chaincodelabs",
         images: ["https://ghstats.bitcoinsearch.xyz/images/bitcoin-dev-og.png"]
+    },
+    metadataBase: new URL("https://ghstats.bitcoinsearch.xyz"),
+    alternates: {
+        canonical: "/",
+        languages: {
+            "en-US": "/en-US"
+        }
     }
 }
 
