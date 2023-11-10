@@ -3,6 +3,20 @@ export type Contributions = Record<
     Record<string, Array<{ date: string; type: string }>>
 >
 
+export type PageInfo = {
+    hasNextPage: boolean
+    startCursor: string
+    endCursor: string
+}
+
+export type Repository = {
+    url: string
+    owner: {
+        login: string
+        avatarUrl: string
+    }
+}
+
 export type GridSet = {
     month: string
     boxes: Array<{ day: number; is_active: boolean }>
