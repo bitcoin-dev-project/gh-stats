@@ -30,12 +30,12 @@ export default function Search() {
         setError(null)
 
         const { issues, prs } = await fetchIssues({
-            username: username as string
+            username: username as string,
+            endCursor: ""
         })
         setLoading(false)
 
         if (issues.error || prs.error) {
-            console.error(issues.error, "error")
             setError(issues.error[0].message || prs.error[0].message)
             return
         }

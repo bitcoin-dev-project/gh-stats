@@ -10,7 +10,6 @@ import { Project, PRsObject } from "@/types/pull_requests"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
     createGridSet,
-    extractYears,
     filterObject,
     generateGraphValues,
     getOrganisations,
@@ -28,7 +27,9 @@ export const useGithubIssues = () => {
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [projects, setProjects] = useState<Array<Project>>([])
+    const [projects, setProjects] = useState<
+        Array<Project & { position: number }>
+    >([])
     const [toggleFilter, setToggleFilter] = useState<string | null>("")
     const [yearlyFilter, setYearlyFilter] = useState<string>(currentYear)
     const [toolTipKey, setToolTipKey] = useState<string | null>("")
@@ -44,6 +45,20 @@ export const useGithubIssues = () => {
         closedPrsByOthers: [],
         mergedPrs: []
     })
+
+    /**
+     * We are using the Date object to create the startDate and endDate of the query range
+     * new Date(): creates a date using the Date constructor
+     * Number(args): Converts the string variable of args to a number
+     *
+     * 0, 1, 4 or 12, 0, 4: are parameters passed to the Date contructor to modify the Date object;
+     * the first Argument: This specifies the month parameter
+     * the second Argument: This specifies the day parameter
+     * the first Argument: This specifies the time parameter, using the 24:00hr clock format
+     */
+
+    const startDate = new Date(Number(yearlyFilter), 0, 1, 4).toISOString()
+    const endDate = new Date(Number(yearlyFilter), 12, 0, 4).toISOString()
 
     useEffect(() => {
         const fetchGithubIssues = async () => {
@@ -69,29 +84,51 @@ export const useGithubIssues = () => {
                 mergedPrs: []
             }))
             setProjects([])
-            const { issues, prs } = await fetchIssues({
-                username: username as string
+
+            const endCursor = localStorage.getItem("end_cursor") as string
+
+            const { ranged_prs, ranged_issues } = await fetchIssues({
+                username: username as string,
+                startDate,
+                endDate,
+                endCursor
             })
+
+            const rangedPrsData =
+                ranged_prs?.data !== undefined ? ranged_prs.data : []
+            const rangedIssuesData =
+                ranged_issues?.data !== undefined ? ranged_issues.data : []
+
+            const storedCursor =
+                Number(yearlyFilter) <= Number(currentYear) - 1
+                    ? endCursor
+                    : ranged_issues?.endCursorObj?.end_cursor
+
+            localStorage.setItem("end_cursor", storedCursor)
 
             setLoading(false)
 
-            if (issues.error || prs.error) {
-                console.error(issues.error, "error")
-                setError(issues.error[0].message || prs.error[0].message)
+            if (ranged_issues.error || ranged_prs.error) {
+                setError(
+                    ranged_issues?.error[0]?.message ||
+                        ranged_prs?.error[0]?.message
+                )
+                setLoading(false)
                 return
             }
 
             const issue = getOwnComments({
-                data: issues.data,
+                data: rangedIssuesData,
                 username: username as string
             })
             const longIssue = getLongComments({
-                data: issues.data
+                data: rangedIssuesData
             })
             const othersIssue = getOthersComments({
-                data: issues.data,
+                data: rangedIssuesData,
                 username: username as string
             })
+
             const {
                 closedPRs,
                 closedPRsByOthers,
@@ -99,10 +136,14 @@ export const useGithubIssues = () => {
                 openInactivePRs,
                 openPRs
             } = getPullRequests({
-                data: prs.data,
+                data: rangedPrsData,
                 username: username as string
             })
-            const { orgs } = getOrganisations(prs.data, issues.data, username)
+            const { orgs } = getOrganisations(
+                rangedPrsData,
+                rangedIssuesData,
+                username
+            )
 
             setProjects(orgs)
 
@@ -124,26 +165,19 @@ export const useGithubIssues = () => {
         }
 
         fetchGithubIssues()
-    }, [username])
+    }, [currentYear, endDate, startDate, username, yearlyFilter])
 
     const memoizedIssues = useMemo(
-        () =>
-            filterObject(toggleFilter, yearlyFilter, toolTipKey, issuesObject),
-        [issuesObject, toggleFilter, toolTipKey, yearlyFilter]
+        () => filterObject(toggleFilter, toolTipKey, issuesObject),
+        [issuesObject, toggleFilter, toolTipKey]
     )
 
     const memoizedPrs = useMemo(
-        () => filterObject(toggleFilter, yearlyFilter, toolTipKey, prsObject),
-        [prsObject, toggleFilter, toolTipKey, yearlyFilter]
+        () => filterObject(toggleFilter, toolTipKey, prsObject),
+        [prsObject, toggleFilter, toolTipKey]
     )
 
-    const { years } = extractYears(prsObject, issuesObject)
-
-    const { contributions } = getYearlyContributions(
-        yearlyFilter,
-        prsObject,
-        issuesObject
-    )
+    const { contributions } = getYearlyContributions(prsObject, issuesObject)
     const { gridSet } = createGridSet(yearlyFilter!)
 
     const memoizedGraphValues = useMemo(
@@ -156,7 +190,8 @@ export const useGithubIssues = () => {
     }
 
     const handleYearlyFilter = (key: string) => {
-        setYearlyFilter((prev) => (prev === key ? prev : key))
+        if (key === yearlyFilter) return
+        setYearlyFilter(key)
     }
 
     const onClickToolTip = (content: Contribution) => {
@@ -181,8 +216,8 @@ export const useGithubIssues = () => {
         toggleFilter,
         yearlyFilter,
         handleYearlyFilter,
-        years,
         memoizedGraphValues,
-        onClickToolTip, goBack
+        onClickToolTip,
+        goBack
     }
 }

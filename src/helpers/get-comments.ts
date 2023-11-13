@@ -1,17 +1,20 @@
-import { Comment } from "@/types/comments"
+import { MAX_COMMENT_LENGTH } from "@/types"
+import { Comment, IssueCommentNodes } from "@/types/comments"
 
 export const getOwnComments = ({
     data,
     username
 }: {
-    data: any
+    data: IssueCommentNodes[]
     username: string
 }): Comment[] => {
-    const rawComments = data?.issueComments?.nodes.filter(
-        (comment: any) => comment.issue.author.login === username
+    data = data ?? []
+
+    const rawComments = data?.filter(
+        (comment) => comment.issue.author.login === username
     )
 
-    const comments: Comment[] = rawComments.map((comment: any) => {
+    const comments: Comment[] = rawComments?.map((comment) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -34,14 +37,16 @@ export const getOthersComments = ({
     data,
     username
 }: {
-    data: any
+    data: IssueCommentNodes[]
     username: string
 }): Comment[] => {
-    const rawComments = data?.issueComments?.nodes.filter(
-        (comment: any) => comment.issue.author.login !== username
+    data = data ?? []
+
+    const rawComments = data?.filter(
+        (comment) => comment.issue.author.login !== username
     )
 
-    const comments: Comment[] = rawComments.map((comment: any) => {
+    const comments: Comment[] = rawComments?.map((comment) => {
         return {
             body: comment.body,
             repository: comment.repository.url,
@@ -60,12 +65,18 @@ export const getOthersComments = ({
     return comments
 }
 
-export const getLongComments = ({ data }: { data: any }): Comment[] => {
-    const rawComments = data?.issueComments?.nodes.filter(
-        (comment: any) => comment.body.length > 500
+export const getLongComments = ({
+    data
+}: {
+    data: IssueCommentNodes[]
+}): Comment[] => {
+    data = data ?? []
+
+    const rawComments = data?.filter(
+        (comment) => comment.body.length > MAX_COMMENT_LENGTH
     )
 
-    const comments: Comment[] = rawComments.map((comment: any) => {
+    const comments: Comment[] = rawComments?.map((comment) => {
         return {
             body: comment.body,
             repository: comment.repository.url,

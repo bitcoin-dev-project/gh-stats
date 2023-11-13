@@ -1,27 +1,14 @@
-import { ISSUES, PULL_REQUESTS } from "@/graphql/queries"
+import { FETCH_CONTRIBUTION_YEARS } from "@/graphql/queries"
+import { PrDataType } from "@/types/pull_requests"
 
-export async function getGithubData({
-    username,
+export async function getContributionYears({
     token,
-    query
+    username
 }: {
-    username: string
     token?: string
-    query: "ISSUES" | "PULL_REQUESTS"
+    username: string
 }) {
     const tokenFromEnv = process.env.GITHUB_TOKEN
-
-    let graphqlQuery = ""
-    switch (query) {
-        case "ISSUES":
-            graphqlQuery = ISSUES
-            break
-        case "PULL_REQUESTS":
-            graphqlQuery = PULL_REQUESTS
-            break
-        default:
-            throw new Error("Invalid query")
-    }
 
     try {
         const res = await fetch("https://api.github.com/graphql", {
@@ -31,23 +18,29 @@ export async function getGithubData({
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                query: graphqlQuery,
+                query: FETCH_CONTRIBUTION_YEARS,
                 variables: {
                     username
                 }
             })
         })
+
         if (!res.ok) {
             return { error: res.statusText, message: "Failed to fetch API" }
         }
 
         const data = await res.json()
+        const jsonData: PrDataType = data.data.user
+
+        const contributionYears =
+            jsonData?.contributionsCollection.contributionYears
+
         if (data.errors) {
             return { error: data.errors, message: "Failed to fetch API" }
         }
 
         return {
-            data: data.data.user,
+            data: contributionYears,
             error: null
         }
     } catch (error) {

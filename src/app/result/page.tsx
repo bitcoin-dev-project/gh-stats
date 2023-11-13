@@ -1,15 +1,16 @@
 "use client"
 
-import { useSearchParams } from "next/navigation"
 import React from "react"
+import { useSearchParams } from "next/navigation"
 import { ProjectsBlock } from "../components/cards/OrganisationCard"
 
 import YearSection from "../components/years-switch"
 import { useGithubIssues } from "@/hooks/useGithubIssues"
 import { IssuesAndPullRequests } from "../components/issues-and-prs"
-import "../globals.css"
-import ToolTip from "../components/tool-tip"
 import { ArrowLeftIcon } from "@radix-ui/react-icons"
+import { useGetYears } from "@/hooks/useGetYears"
+import ContributionGraph from "../components/contribution-graph"
+import "../globals.css"
 
 const Page = () => {
     const searchParams = useSearchParams()
@@ -23,11 +24,11 @@ const Page = () => {
         toggleFilter,
         yearlyFilter,
         handleYearlyFilter,
-        years,
         memoizedGraphValues,
         onClickToolTip,
         goBack
     } = useGithubIssues()
+    const { years } = useGetYears()
 
     return (
         <main className="flex items-center justify-center bg-white">
@@ -60,32 +61,11 @@ const Page = () => {
                                 </button>
                             </section>
                         </div>
-                        <div className="max-w-full w-full overflow-x-auto">
-                            <div className="gap-[2px] grid grid-flow-col h-full gridBox">
-                                {memoizedGraphValues.map((day, idx) => (
-                                    <ToolTip
-                                        key={`${day.day}_${idx}`}
-                                        content={day}
-                                        onClickToolTip={onClickToolTip}
-                                        loading={loading}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                        <section className="text-black text-xs font-medium flex gap-3 flex-wrap">
-                            <div className="flex items-center gap-1">
-                                <p>Commits</p>
-                                <section className="h-[10px] w-[10px] rounded-[3px] bg-grid-blue"></section>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <p>Comments</p>
-                                <section className="h-[10px] w-[10px] rounded-[3px] bg-grid-yellow"></section>
-                            </div>
-                            <div className="flex items-center gap-1">
-                                <p>Commits & Comments</p>
-                                <section className="h-[10px] w-[10px] rounded-[3px] bg-grid-green"></section>
-                            </div>
-                        </section>
+                        <ContributionGraph
+                            memoizedGraphValues={memoizedGraphValues}
+                            onClickToolTip={onClickToolTip}
+                            loading={loading}
+                        />
                     </section>
                     <ProjectsBlock
                         projects={projects}
