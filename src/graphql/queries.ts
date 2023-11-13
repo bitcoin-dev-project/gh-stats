@@ -140,3 +140,11 @@ export const FETCH_RANGED_COMMENTS = `query ($username: String!, $endCursor: Str
     }
   }
 }`
+
+export const FETCH_CONTTRIBUTION_YEARS = `query contributions($username: String!, ) {
+  user(login: $username) {
+    contributionsCollection{
+      contributionYears
+    }
+  }
+}`
