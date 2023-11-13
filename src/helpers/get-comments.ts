@@ -7,6 +7,8 @@ export const getOwnComments = ({
     data: IssueCommentNodes[]
     username: string
 }): Comment[] => {
+    data = data !== undefined ? data : []
+
     const rawComments = data?.filter(
         (comment) => comment.issue.author.login === username
     )
@@ -37,6 +39,8 @@ export const getOthersComments = ({
     data: IssueCommentNodes[]
     username: string
 }): Comment[] => {
+    data = data !== undefined ? data : []
+
     const rawComments = data?.filter(
         (comment) => comment.issue.author.login !== username
     )
@@ -65,6 +69,8 @@ export const getLongComments = ({
 }: {
     data: IssueCommentNodes[]
 }): Comment[] => {
+    data = data !== undefined ? data : []
+
     const rawComments = data?.filter((comment) => comment.body.length > 500)
 
     const comments: Comment[] = rawComments?.map((comment) => {

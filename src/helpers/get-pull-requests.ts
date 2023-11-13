@@ -9,7 +9,7 @@ export const getPullRequests = ({
     data: PrNodes[]
     username: string
 }): PullRequests => {
-    data = data?.filter((x) => x?.pullRequest !== undefined)
+    data = data !== undefined ? data : []
 
     const openPRsData = data?.filter((pr) => pr?.pullRequest?.closed === false)
 

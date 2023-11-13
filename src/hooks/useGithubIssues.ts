@@ -10,7 +10,6 @@ import { Project, PRsObject } from "@/types/pull_requests"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
     createGridSet,
-    extractYears,
     filterObject,
     generateGraphValues,
     getOrganisations,
@@ -28,9 +27,10 @@ export const useGithubIssues = () => {
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [projects, setProjects] = useState<Array<Project>>([])
+    const [projects, setProjects] = useState<
+        Array<Project & { position: number }>
+    >([])
     const [toggleFilter, setToggleFilter] = useState<string | null>("")
-    const [years, setYears] = useState<Array<string>>([])
     const [yearlyFilter, setYearlyFilter] = useState<string>(currentYear)
     const [toolTipKey, setToolTipKey] = useState<string | null>("")
     const [issuesObject, setIssuesObject] = useState<IssuesObject>({
@@ -73,19 +73,20 @@ export const useGithubIssues = () => {
                 mergedPrs: []
             }))
             setProjects([])
-            setYears([])
 
             const endCursor = localStorage.getItem("end_cursor") as string
 
-            const { issues, prs, ranged_prs, ranged_issues, years } =
-                await fetchIssues({
-                    username: username as string,
-                    startDate,
-                    endDate,
-                    endCursor
-                })
-            console.log(ranged_issues?.data, "RANGED ISSUES")
-            console.log(ranged_prs?.data, "RANGED PRS")
+            const { ranged_prs, ranged_issues } = await fetchIssues({
+                username: username as string,
+                startDate,
+                endDate,
+                endCursor
+            })
+
+            const rangedPrsData =
+                ranged_prs?.data !== undefined ? ranged_prs.data : []
+            const rangedIssuesData =
+                ranged_issues?.data !== undefined ? ranged_issues.data : []
 
             localStorage.setItem(
                 "end_cursor",
@@ -94,22 +95,25 @@ export const useGithubIssues = () => {
 
             setLoading(false)
 
-            if (issues.error || prs.error) {
-                console.error(issues.error, "error")
-                setError(issues.error[0].message || prs.error[0].message)
+            if (ranged_issues.error || ranged_prs.error) {
+                console.error(ranged_issues.error, "error")
+                setError(
+                    ranged_issues.error[0].message ||
+                        ranged_prs.error[0].message
+                )
                 setLoading(false)
                 return
             }
 
             const issue = getOwnComments({
-                data: ranged_issues?.data!,
+                data: rangedIssuesData,
                 username: username as string
             })
             const longIssue = getLongComments({
-                data: ranged_issues?.data!
+                data: rangedIssuesData
             })
             const othersIssue = getOthersComments({
-                data: ranged_issues?.data!,
+                data: rangedIssuesData,
                 username: username as string
             })
 
@@ -120,17 +124,16 @@ export const useGithubIssues = () => {
                 openInactivePRs,
                 openPRs
             } = getPullRequests({
-                data: ranged_prs.data!,
+                data: rangedPrsData,
                 username: username as string
             })
             const { orgs } = getOrganisations(
-                ranged_prs?.data!,
-                issues.data,
+                rangedPrsData,
+                rangedIssuesData,
                 username
             )
 
             setProjects(orgs)
-            setYears(years.data!)
 
             setIssuesObject((prev) => ({
                 ...prev,
@@ -201,7 +204,6 @@ export const useGithubIssues = () => {
         toggleFilter,
         yearlyFilter,
         handleYearlyFilter,
-        years,
         memoizedGraphValues,
         onClickToolTip,
         goBack
