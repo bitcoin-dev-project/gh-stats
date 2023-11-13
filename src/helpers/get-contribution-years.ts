@@ -1,29 +1,14 @@
-import { FETCH_RANGED_PRS } from "@/graphql/queries"
+import { FETCH_CONTTRIBUTION_YEARS } from "@/graphql/queries"
 import { PrDataType } from "@/types/pull_requests"
 
 export async function getContributionYears({
-    username,
     token,
-    query,
-    startDate,
-    endDate
+    username
 }: {
-    username: string
     token?: string
-    query: "FETCH_RANGED_PRS"
-    startDate?: string
-    endDate?: string
+    username: string
 }) {
     const tokenFromEnv = process.env.GITHUB_TOKEN
-
-    let graphqlQuery = ""
-    switch (query) {
-        case "FETCH_RANGED_PRS":
-            graphqlQuery = FETCH_RANGED_PRS
-            break
-        default:
-            throw new Error("Invalid query")
-    }
 
     try {
         const res = await fetch("https://api.github.com/graphql", {
@@ -33,11 +18,9 @@ export async function getContributionYears({
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                query: graphqlQuery,
+                query: FETCH_CONTTRIBUTION_YEARS,
                 variables: {
-                    username,
-                    startDate,
-                    endDate
+                    username
                 }
             })
         })
