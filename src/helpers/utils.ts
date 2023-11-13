@@ -7,7 +7,7 @@ import {
     GRID_GREEN,
     GRID_YELLOW
 } from "@/types"
-import { Comment, IssuesObject } from "@/types/comments"
+import { Comment, IssueCommentNodes, IssuesObject } from "@/types/comments"
 import { PrNodes, Project, PRsObject } from "@/types/pull_requests"
 
 export const getIssueNumber = (arg: string) => {
@@ -43,7 +43,7 @@ export const collapsibleHeader = (repoUrl: string, username: string) => {
 
 export const getOrganisations = (
     prsData: PrNodes[],
-    issueData: any,
+    issueData: IssueCommentNodes[],
     username: string
 ) => {
     const prOrgs: Array<Project> = prsData
@@ -57,9 +57,9 @@ export const getOrganisations = (
             avatarUrl: pr?.pullRequest?.repository.owner.avatarUrl
         }))
 
-    const issueOrgs: Array<Project> = issueData?.issueComments?.nodes
-        .filter(
-            (issue: any) =>
+    const issueOrgs: Array<Project> = issueData
+        ?.filter(
+            (issue) =>
                 issue.repository.owner.login.toLowerCase() !==
                 username.toLowerCase()
         )
@@ -68,10 +68,27 @@ export const getOrganisations = (
             avatarUrl: issue.repository.owner.avatarUrl
         }))
 
-    const orgs = [...prOrgs, ...issueOrgs].filter(
-        (value, index, arr) =>
-            arr.map((x) => x.login).indexOf(value.login) === index
+    const allOrgs = [...prOrgs, ...issueOrgs].reduce(
+        (acc, curr) => {
+            const key = curr.login
+
+            const group = acc[key] ?? []
+            return { ...acc, [key]: [...group, curr] }
+        },
+        {} as Record<string, Array<{ login: string; avatarUrl: string }>>
     )
+
+    const addOrgPosition = []
+    for (const [key, value] of Object.entries(allOrgs)) {
+        if (key) {
+            addOrgPosition.push({
+                login: value[0].login,
+                avatarUrl: value[0].avatarUrl,
+                position: value.length
+            })
+        }
+    }
+    const orgs = addOrgPosition.sort((a, c) => c.position - a.position)
 
     return { orgs }
 }
@@ -165,7 +182,7 @@ export const months = [
     "Dec"
 ]
 
-const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+export const days = ["Mon", "Wed", "Fri"]
 
 export const getYearlyContributions = (
     prsData: PRsObject,
