@@ -11,101 +11,101 @@ export const getPullRequests = ({
 }): PullRequests => {
     data = data ?? []
 
-    const openPRsData = data.filter((pr) => pr.pullRequest.closed === false)
+    const openPRsData = data?.filter((pr) => pr?.pullRequest.closed === false)
 
-    const openPRs: PR[] = openPRsData.map((pr) => ({
-        totalComments: pr.pullRequest.totalCommentsCount,
+    const openPRs: PR[] = openPRsData?.map((pr) => ({
+        totalComments: pr?.pullRequest.totalCommentsCount,
         daysOpened: Math.floor(
-            (CURRENT_DAY - new Date(pr.pullRequest.createdAt).getTime()) /
+            (CURRENT_DAY - new Date(pr?.pullRequest.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.pullRequest.url,
-        repoUrl: pr.pullRequest.repository.url,
-        title: pr.pullRequest.title,
-        createdAt: pr.pullRequest.createdAt,
-        avatarUrl: pr.pullRequest.author.avatarUrl,
-        project: pr.pullRequest.repository.owner
+        url: pr?.pullRequest.url,
+        repoUrl: pr?.pullRequest.repository.url,
+        title: pr?.pullRequest.title,
+        createdAt: pr?.pullRequest.createdAt,
+        avatarUrl: pr?.pullRequest.author.avatarUrl,
+        project: pr?.pullRequest.repository.owner
     }))
 
-    const openInactivePRsData = openPRsData.filter(
+    const openInactivePRsData = openPRsData?.filter(
         (pr) =>
             Math.floor(
-                (CURRENT_DAY - new Date(pr.pullRequest.createdAt).getTime()) /
+                (CURRENT_DAY - new Date(pr?.pullRequest.createdAt).getTime()) /
                     ONE_DAY
             ) > DAYS_TO_INACTIVE
     )
 
-    const openInactivePRs: PR[] = openInactivePRsData.map((pr) => ({
-        totalComments: pr.pullRequest.totalCommentsCount,
+    const openInactivePRs: PR[] = openInactivePRsData?.map((pr) => ({
+        totalComments: pr?.pullRequest.totalCommentsCount,
         daysOpened: Math.floor(
-            (CURRENT_DAY - new Date(pr.pullRequest.createdAt).getTime()) /
+            (CURRENT_DAY - new Date(pr?.pullRequest.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.pullRequest.url,
-        repoUrl: pr.pullRequest.repository.url,
-        title: pr.pullRequest.title,
-        createdAt: pr.pullRequest.createdAt,
-        avatarUrl: pr.pullRequest.author.avatarUrl,
-        project: pr.pullRequest.repository.owner
+        url: pr?.pullRequest.url,
+        repoUrl: pr?.pullRequest.repository.url,
+        title: pr?.pullRequest.title,
+        createdAt: pr?.pullRequest.createdAt,
+        avatarUrl: pr?.pullRequest.author.avatarUrl,
+        project: pr?.pullRequest.repository.owner
     }))
 
-    const closedPRsData = data.filter(
+    const closedPRsData = data?.filter(
         (pr) =>
-            pr.pullRequest.closed === true && pr.pullRequest.merged === false
+            pr?.pullRequest.closed === true && pr?.pullRequest.merged === false
     )
 
-    const closedPRs: PR[] = closedPRsData.map((pr) => ({
-        totalComments: pr.pullRequest.totalCommentsCount,
+    const closedPRs: PR[] = closedPRsData?.map((pr) => ({
+        totalComments: pr?.pullRequest.totalCommentsCount,
         daysOpened: Math.floor(
-            (new Date(pr.pullRequest.closedAt).getTime() -
-                new Date(pr.pullRequest.createdAt).getTime()) /
+            (new Date(pr?.pullRequest.closedAt).getTime() -
+                new Date(pr?.pullRequest.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.pullRequest.url,
-        repoUrl: pr.pullRequest.repository.url,
-        title: pr.pullRequest.title,
-        createdAt: pr.pullRequest.createdAt,
-        avatarUrl: pr.pullRequest.author.avatarUrl,
-        project: pr.pullRequest.repository.owner
+        url: pr?.pullRequest.url,
+        repoUrl: pr?.pullRequest.repository.url,
+        title: pr?.pullRequest.title,
+        createdAt: pr?.pullRequest.createdAt,
+        avatarUrl: pr?.pullRequest.author.avatarUrl,
+        project: pr?.pullRequest.repository.owner
     }))
 
-    const closedPRsByOthersData = data.filter(
+    const closedPRsByOthersData = data?.filter(
         (pr) =>
-            pr.pullRequest.closed === true &&
-            pr.pullRequest.merged === true &&
-            pr.pullRequest.mergedBy.login !== username
+            pr?.pullRequest.closed === true &&
+            pr?.pullRequest.merged === true &&
+            pr?.pullRequest.mergedBy.login !== username
     )
 
-    const closedPRsByOthers: PR[] = closedPRsByOthersData.map((pr) => ({
-        totalComments: pr.pullRequest.totalCommentsCount,
+    const closedPRsByOthers: PR[] = closedPRsByOthersData?.map((pr) => ({
+        totalComments: pr?.pullRequest.totalCommentsCount,
         daysOpened: Math.floor(
-            (new Date(pr.pullRequest.closedAt).getTime() -
-                new Date(pr.pullRequest.createdAt).getTime()) /
+            (new Date(pr?.pullRequest.closedAt).getTime() -
+                new Date(pr?.pullRequest.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.pullRequest.url,
-        repoUrl: pr.pullRequest.repository.url,
-        title: pr.pullRequest.title,
-        createdAt: pr.pullRequest.createdAt,
-        avatarUrl: pr.pullRequest.author.avatarUrl,
-        project: pr.pullRequest.repository.owner
+        url: pr?.pullRequest.url,
+        repoUrl: pr?.pullRequest.repository.url,
+        title: pr?.pullRequest.title,
+        createdAt: pr?.pullRequest.createdAt,
+        avatarUrl: pr?.pullRequest.author.avatarUrl,
+        project: pr?.pullRequest.repository.owner
     }))
 
-    const mergedPRData = data.filter((pr) => pr.pullRequest.merged === true)
+    const mergedPRData = data?.filter((pr) => pr?.pullRequest.merged === true)
 
-    const mergedPRs: PR[] = mergedPRData.map((pr) => ({
-        totalComments: pr.pullRequest.totalCommentsCount,
+    const mergedPRs: PR[] = mergedPRData?.map((pr) => ({
+        totalComments: pr?.pullRequest.totalCommentsCount,
         daysOpened: Math.floor(
-            (new Date(pr.pullRequest.mergedAt).getTime() -
-                new Date(pr.pullRequest.createdAt).getTime()) /
+            (new Date(pr?.pullRequest.mergedAt).getTime() -
+                new Date(pr?.pullRequest.createdAt).getTime()) /
                 ONE_DAY
         ),
-        url: pr.pullRequest.url,
-        repoUrl: pr.pullRequest.repository.url,
-        title: pr.pullRequest.title,
-        createdAt: pr.pullRequest.createdAt,
-        avatarUrl: pr.pullRequest.author.avatarUrl,
-        project: pr.pullRequest.repository.owner
+        url: pr?.pullRequest.url,
+        repoUrl: pr?.pullRequest.repository.url,
+        title: pr?.pullRequest.title,
+        createdAt: pr?.pullRequest.createdAt,
+        avatarUrl: pr?.pullRequest.author.avatarUrl,
+        project: pr?.pullRequest.repository.owner
     }))
 
     openPRs.sort(

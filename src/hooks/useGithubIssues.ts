@@ -86,7 +86,6 @@ export const useGithubIssues = () => {
             setProjects([])
 
             const endCursor = localStorage.getItem("end_cursor") as string
-            console.log(endCursor, "Saved End cursor")
 
             const { ranged_prs, ranged_issues } = await fetchIssues({
                 username: username as string,
@@ -166,7 +165,7 @@ export const useGithubIssues = () => {
         }
 
         fetchGithubIssues()
-    }, [endDate, startDate, username])
+    }, [currentYear, endDate, startDate, username, yearlyFilter])
 
     const memoizedIssues = useMemo(
         () => filterObject(toggleFilter, toolTipKey, issuesObject),

@@ -79,7 +79,6 @@ export async function getIssueCommentsData({
             const start_cursor = jsonData?.issueComments?.pageInfo?.startCursor
             const isNextPage = jsonData?.issueComments?.pageInfo?.hasNextPage
             const end_cursor = jsonData?.issueComments?.pageInfo?.endCursor
-            console.log(endCursor, "endCursor")
 
             // get previous year from start date of query
             const prevYear = Number(getYearFromDate) - 1
@@ -119,7 +118,6 @@ export async function getIssueCommentsData({
                 return { error: data.errors, message: "Failed to fetch API" }
             }
         } catch (error) {
-            console.log(error)
             return {
                 error: error,
                 message: "Failed to fetch API"

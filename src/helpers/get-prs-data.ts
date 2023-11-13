@@ -75,7 +75,6 @@ export async function getGithubPrsData({
                 return { error: data.errors, message: "Failed to fetch API" }
             }
         } catch (error) {
-            console.log(error)
             return {
                 error: error,
                 message: "Failed to fetch API"

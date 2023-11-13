@@ -38,7 +38,6 @@ export async function getGithubData({
             })
         })
         if (!res.ok) {
-            console.log("res", res)
             return { error: res.statusText, message: "Failed to fetch API" }
         }
 
@@ -52,7 +51,6 @@ export async function getGithubData({
             error: null
         }
     } catch (error) {
-        console.log(error)
         return {
             error: error,
             message: "Failed to fetch API"

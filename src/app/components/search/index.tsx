@@ -36,7 +36,6 @@ export default function Search() {
         setLoading(false)
 
         if (issues.error || prs.error) {
-            console.error(issues.error, "error")
             setError(issues.error[0].message || prs.error[0].message)
             return
         }
