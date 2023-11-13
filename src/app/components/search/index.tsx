@@ -30,7 +30,8 @@ export default function Search() {
         setError(null)
 
         const { issues, prs } = await fetchIssues({
-            username: username as string
+            username: username as string,
+            endCursor: ""
         })
         setLoading(false)
 
