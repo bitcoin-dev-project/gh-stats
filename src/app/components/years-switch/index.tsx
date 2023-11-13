@@ -12,7 +12,7 @@ const YearSection = ({ years, currentYear, handleClick }: YearSectionProps) => {
     const [showYears, setShowYears] = React.useState(false)
 
     return (
-        <div className="w-full sm:p-4 md:p-9 lg:px-8 sm:px-4 md:px-4 sm:py-8 h-max rounded-[15px] p-0 flex items-end justify-end absolute top-9 right-4 md:relative md:block md:top-0 md:right-0 md:max-h-screen overflow-y-scroll">
+        <div className="w-full sm:p-4 md:p-9 lg:px-8 sm:px-4 md:px-4 sm:py-8 h-max rounded-[6px] p-0 flex items-end justify-end absolute top-9 right-4 md:relative md:block md:top-0 md:right-0 md:max-h-screen overflow-y-scroll">
             <div className="md:flex-col gap-1 md:block hidden">
                 {years.map((year) => (
                     <div
@@ -60,7 +60,7 @@ const YearSection = ({ years, currentYear, handleClick }: YearSectionProps) => {
                     </button>
                 </section>
                 {showYears ? (
-                    <section className="flex flex-col gap-1 border-card-border-color border rounded-md shadow-card-shadow bg-white mt-3">
+                    <section className="flex flex-col gap-1 border-card-border-color border rounded-md shadow-card-shadow bg-white mt-3 max-h-[300px] overflow-y-scroll">
                         {years.slice(1).map((year) => (
                             <div
                                 key={year}
