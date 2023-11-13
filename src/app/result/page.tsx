@@ -14,7 +14,7 @@ import "../globals.css"
 
 const Page = () => {
     const searchParams = useSearchParams()
-    const username = searchParams.get("username")
+    const username = searchParams.get("username")?.toLowerCase()
     const {
         handleFilterToggle,
         memoizedIssues,
@@ -48,8 +48,8 @@ const Page = () => {
                                 className="arrowLeftIcon"
                             />
                         </button>
-                        <div className="flex gap-2 flex-col md:justify-between md:items-center md:flex-row">
-                            <h2 className=" text-black capitalize">
+                        <div className="flex gap-2 flex-col md:justify-between md:items-center  md:flex-row">
+                            <h2 className="text-black">
                                 {username} contributions
                             </h2>
                             <section className="">
