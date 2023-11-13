@@ -19,6 +19,23 @@ export async function getIssueCommentsData({
     endCursor: string | null
 }) {
     const tokenFromEnv = process.env.GITHUB_TOKEN
+    let hasNextPage = true
+    const currentDate = new Date()
+    const currentYear = currentDate.getFullYear()
+    const prevYear = currentYear - 1
+    const getYearFromDate = startDate?.slice(0, 4)
+
+    endCursor = Number(getYearFromDate) <= prevYear ? endCursor : null
+
+    if (
+        getYearFromDate !== currentYear.toString() &&
+        getYearFromDate !== prevYear.toString()
+    ) {
+        return {
+            data: [],
+            error: null
+        }
+    }
 
     let graphqlQuery = ""
     switch (query) {
@@ -29,26 +46,12 @@ export async function getIssueCommentsData({
             throw new Error("Invalid query")
     }
 
-    let hasNextPage = true
-
-    endCursor = startDate?.slice(0, 4) === "2022" ? endCursor : null
-
     let startCursorObj: any = {}
     let endCursorObj: any = {}
 
     let allIssueComments: Array<IssueCommentNodes> = []
 
     while (hasNextPage) {
-        if (
-            startDate?.slice(0, 4) !== "2023" &&
-            startDate?.slice(0, 4) !== "2022"
-        ) {
-            return {
-                data: [],
-                error: null
-            }
-        }
-
         try {
             const res = await fetch("https://api.github.com/graphql", {
                 method: "POST",
@@ -76,10 +79,13 @@ export async function getIssueCommentsData({
             const start_cursor = jsonData?.issueComments?.pageInfo?.startCursor
             const isNextPage = jsonData?.issueComments?.pageInfo?.hasNextPage
             const end_cursor = jsonData?.issueComments?.pageInfo?.endCursor
+            console.log(endCursor, "endCursor")
 
-            const prevYear = Number(startDate?.slice(0, 4)) - 1
+            // get previous year from start date of query
+            const prevYear = Number(getYearFromDate) - 1
 
             const findNextYear = nodes_data?.find(
+                // return first year that is a previous year, we are slicing the createdAt date to get current year of eaxh result
                 (x) => x.createdAt.slice(0, 4) === prevYear.toString()
             )
 
@@ -87,6 +93,7 @@ export async function getIssueCommentsData({
                 findNextYear ||
                 (isNextPage === false && findNextYear === undefined)
             ) {
+                // filter  previous year from response data, when previous year is found in current query date range
                 const filter_node_data = nodes_data.filter((x) => {
                     return x.createdAt.slice(0, 4) === startDate?.slice(0, 4)
                 })

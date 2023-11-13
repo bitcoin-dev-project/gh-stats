@@ -46,6 +46,17 @@ export const useGithubIssues = () => {
         mergedPrs: []
     })
 
+    /**
+     * We are using the Date object to create the startDate and endDate of the query range
+     * new Date(): creates a date using the Date constructor
+     * Number(args): Converts the string variable of args to a number
+     *
+     * 0, 1, 4 or 12, 0, 4: are parameters passed to the Date contructor to modify the Date object;
+     * the first Argument: This specifies the month parameter
+     * the second Argument: This specifies the day parameter
+     * the first Argument: This specifies the time parameter, using the 24:00hr clock format
+     */
+
     const startDate = new Date(Number(yearlyFilter), 0, 1, 4).toISOString()
     const endDate = new Date(Number(yearlyFilter), 12, 0, 4).toISOString()
 
@@ -75,6 +86,7 @@ export const useGithubIssues = () => {
             setProjects([])
 
             const endCursor = localStorage.getItem("end_cursor") as string
+            console.log(endCursor, "Saved End cursor")
 
             const { ranged_prs, ranged_issues } = await fetchIssues({
                 username: username as string,
@@ -88,18 +100,19 @@ export const useGithubIssues = () => {
             const rangedIssuesData =
                 ranged_issues?.data !== undefined ? ranged_issues.data : []
 
-            localStorage.setItem(
-                "end_cursor",
-                ranged_issues?.endCursorObj?.end_cursor
-            )
+            const storedCursor =
+                Number(yearlyFilter) <= Number(currentYear) - 1
+                    ? endCursor
+                    : ranged_issues?.endCursorObj?.end_cursor
+
+            localStorage.setItem("end_cursor", storedCursor)
 
             setLoading(false)
 
             if (ranged_issues.error || ranged_prs.error) {
-                console.error(ranged_issues.error, "error")
                 setError(
-                    ranged_issues.error[0].message ||
-                        ranged_prs.error[0].message
+                    ranged_issues?.error[0]?.message ||
+                        ranged_prs?.error[0]?.message
                 )
                 setLoading(false)
                 return

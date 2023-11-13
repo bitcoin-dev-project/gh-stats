@@ -35,3 +35,4 @@ export const GRID_YELLOW = "#E7C23E"
 export const GRID_BLUE = "#0783F5"
 export const GRID_GRAY = "#EEEEEE"
 export const GRID_GREEN = "#39D353"
+export const MAX_COMMENT_LENGTH = 500

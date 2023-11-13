@@ -1,3 +1,4 @@
+import { MAX_COMMENT_LENGTH } from "@/types"
 import { Comment, IssueCommentNodes } from "@/types/comments"
 
 export const getOwnComments = ({
@@ -7,7 +8,7 @@ export const getOwnComments = ({
     data: IssueCommentNodes[]
     username: string
 }): Comment[] => {
-    data = data !== undefined ? data : []
+    data = data ?? []
 
     const rawComments = data?.filter(
         (comment) => comment.issue.author.login === username
@@ -39,7 +40,7 @@ export const getOthersComments = ({
     data: IssueCommentNodes[]
     username: string
 }): Comment[] => {
-    data = data !== undefined ? data : []
+    data = data ?? []
 
     const rawComments = data?.filter(
         (comment) => comment.issue.author.login !== username
@@ -69,9 +70,11 @@ export const getLongComments = ({
 }: {
     data: IssueCommentNodes[]
 }): Comment[] => {
-    data = data !== undefined ? data : []
+    data = data ?? []
 
-    const rawComments = data?.filter((comment) => comment.body.length > 500)
+    const rawComments = data?.filter(
+        (comment) => comment.body.length > MAX_COMMENT_LENGTH
+    )
 
     const comments: Comment[] = rawComments?.map((comment) => {
         return {

@@ -1,4 +1,4 @@
-import { FETCH_CONTTRIBUTION_YEARS } from "@/graphql/queries"
+import { FETCH_CONTRIBUTION_YEARS } from "@/graphql/queries"
 import { PrDataType } from "@/types/pull_requests"
 
 export async function getContributionYears({
@@ -18,7 +18,7 @@ export async function getContributionYears({
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                query: FETCH_CONTTRIBUTION_YEARS,
+                query: FETCH_CONTRIBUTION_YEARS,
                 variables: {
                     username
                 }
@@ -26,7 +26,6 @@ export async function getContributionYears({
         })
 
         if (!res.ok) {
-            console.log("res", res)
             return { error: res.statusText, message: "Failed to fetch API" }
         }
 
@@ -45,7 +44,6 @@ export async function getContributionYears({
             error: null
         }
     } catch (error) {
-        console.log(error)
         return {
             error: error,
             message: "Failed to fetch API"
