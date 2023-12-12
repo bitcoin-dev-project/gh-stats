@@ -11,7 +11,7 @@ export const getOwnComments = ({
     data = data ?? []
 
     const rawComments = data?.filter(
-        (comment) => comment.issue.author.login === username
+        (comment) => comment.issue.author?.login === username
     )
 
     const comments: Comment[] = rawComments?.map((comment) => {
@@ -43,7 +43,7 @@ export const getOthersComments = ({
     data = data ?? []
 
     const rawComments = data?.filter(
-        (comment) => comment.issue.author.login !== username
+        (comment) => comment.issue.author?.login !== username
     )
 
     const comments: Comment[] = rawComments?.map((comment) => {

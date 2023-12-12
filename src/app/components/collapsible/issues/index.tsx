@@ -97,14 +97,14 @@ const CollaspsibleIssue = ({
                                         <section className="flex items-center w-max gap-2">
                                             <Image
                                                 src={
-                                                    issue.issue.author.avatarUrl
+                                                    issue.issue.author?.avatarUrl
                                                 }
                                                 alt="avatar"
                                                 height={16}
                                                 width={16}
                                                 className="rounded-[50%]"
                                             />
-                                            <p>{issue.issue.author.login}</p>
+                                            <p>{issue.issue.author?.login}</p>
                                         </section>
                                         <span>•</span>
                                         <section className="flex items-center w-max gap-2">
