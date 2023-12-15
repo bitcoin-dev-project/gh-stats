@@ -6,7 +6,7 @@ import {
     getOwnComments
 } from "@/helpers/get-comments"
 import { getPullRequests } from "@/helpers/get-pull-requests"
-import { Project, PRsObject } from "@/types/pull_requests"
+import { PrNodes, Project, PRsObject } from "@/types/pull_requests"
 import { useRouter, useSearchParams } from "next/navigation"
 import {
     createGridSet,
@@ -15,7 +15,7 @@ import {
     getOrganisations,
     getYearlyContributions
 } from "@/helpers/utils"
-import { IssuesObject } from "@/types/comments"
+import { IssueCommentNodes, IssuesObject } from "@/types/comments"
 import { Contribution } from "@/types"
 
 export const useGithubIssues = () => {
@@ -33,6 +33,8 @@ export const useGithubIssues = () => {
     const [toggleFilter, setToggleFilter] = useState<string | null>("")
     const [yearlyFilter, setYearlyFilter] = useState<string>(currentYear)
     const [toolTipKey, setToolTipKey] = useState<string | null>("")
+    const [allPrs, setAllPrs] = useState<PrNodes[]>([])
+    const [allIssues, setAllIssues] = useState<IssueCommentNodes[]>([])
     const [issuesObject, setIssuesObject] = useState<IssuesObject>({
         ownIssueComments: [],
         longIssueComments: [],
@@ -116,6 +118,8 @@ export const useGithubIssues = () => {
                 setLoading(false)
                 return
             }
+            setAllIssues(rangedIssuesData)
+            setAllPrs(rangedPrsData)
 
             const issue = getOwnComments({
                 data: rangedIssuesData,
@@ -204,7 +208,7 @@ export const useGithubIssues = () => {
         }
     }
 
-    const goBack = () => Router.back()
+    const goBack = () => Router.push("/")
 
     return {
         projects,
@@ -218,6 +222,8 @@ export const useGithubIssues = () => {
         handleYearlyFilter,
         memoizedGraphValues,
         onClickToolTip,
-        goBack
+        goBack,
+        allPrs,
+        allIssues
     }
 }

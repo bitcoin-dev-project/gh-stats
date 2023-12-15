@@ -26,7 +26,9 @@ const Page = () => {
         handleYearlyFilter,
         memoizedGraphValues,
         onClickToolTip,
-        goBack
+        goBack,
+        allPrs,
+        allIssues
     } = useGithubIssues()
     const { years } = useGetYears()
 
@@ -65,6 +67,9 @@ const Page = () => {
                             memoizedGraphValues={memoizedGraphValues}
                             onClickToolTip={onClickToolTip}
                             loading={loading}
+                            allPrs={allPrs}
+                            allIssues={allIssues}
+                            username={username!}
                         />
                     </section>
                     <ProjectsBlock
