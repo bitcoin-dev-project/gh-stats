@@ -12,6 +12,7 @@ import {
     contentHeading,
     getIssueNumber
 } from "@/helpers/utils"
+import { MarkdownWrapper } from "../../wrapper/MarkdownWrapper"
 
 type CollapsibleIssueProps = {
     issues: Comment[]
@@ -89,9 +90,10 @@ const CollaspsibleIssue = ({
                                             {issue.url}
                                         </Link>
                                     </section>
-                                    <p className="text-sm  text-black">
-                                        {issue.body}
-                                    </p>
+                                    <MarkdownWrapper
+                                        summary={issue.body}
+                                        className="text-sm  text-black"
+                                    />
 
                                     <div className="flex flex-row w-full gap-3 items-center text-xs text-black">
                                         <section className="flex items-center w-max gap-2">

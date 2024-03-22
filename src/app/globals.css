@@ -40,3 +40,15 @@ body {
 .arrowLeftIcon:hover {
     background-color: #eeeeee;
 }
+
+.markdownStyles p {
+    margin: 16px 0px;
+}
+
+.summaryTags p {
+    margin: 0px 0px;
+}
+
+.markdownStyles a {
+    text-decoration: underline;
+}
