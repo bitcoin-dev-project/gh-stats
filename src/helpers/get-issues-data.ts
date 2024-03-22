@@ -74,11 +74,17 @@ export async function getIssueCommentsData({
 
             const data = await res.json()
             const jsonData: IssueCommentDataType = data.data.user
+            const {
+                startCursor,
+                hasNextPage: pageHasNextPage,
+                endCursor: pageEndCursor
+            } = jsonData?.issueComments?.pageInfo
 
             const nodes_data = jsonData?.issueComments?.nodes
-            const start_cursor = jsonData?.issueComments?.pageInfo?.startCursor
-            const isNextPage = jsonData?.issueComments?.pageInfo?.hasNextPage
-            const end_cursor = jsonData?.issueComments?.pageInfo?.endCursor
+            const start_cursor = startCursor
+            const isNextPage = pageHasNextPage
+            const end_cursor =
+                nodes_data.length >= 100 ? pageEndCursor : startCursor
 
             // get previous year from start date of query
             const prevYear = Number(getYearFromDate) - 1
